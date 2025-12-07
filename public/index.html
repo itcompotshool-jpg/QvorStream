@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QvorStream Sync</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* Палитра Rave/Dark */
+            --color-bg: #121212; /* Очень темный фон */
+            --color-card-bg: #1e1e1e; /* Чуть светлее для блоков */
+            --color-text-primary: #f0f0f0; 
+            --color-text-secondary: #aaaaaa;
+            --color-accent-red: #e91e63; /* Акцентный цвет (розовый/красный) */
+            --color-accent-blue: #03a9f4; /* Акцентный цвет (синий) */
+            
+            --border-radius-sm: 8px; /* Небольшие закругления */
+            --border-radius-lg: 12px;
+            --font-body: 'Roboto', sans-serif;
+        }
+
+        body {
+            background-color: var(--color-bg);
+            color: var(--color-text-primary);
+            font-family: var(--font-body);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            padding: 15px;
+        }
+
+        /* --- Хедер --- */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            margin-bottom: 15px;
+            background-color: var(--color-card-bg);
+            border-radius: var(--border-radius-sm);
+        }
+
+        .header-button {
+            background: none;
+            border: none;
+            color: var(--color-text-primary);
+            font-size: 1.5em;
+            cursor: pointer;
+            padding: 5px;
+            transition: color 0.2s;
+        }
+        .header-button:hover {
+             color: var(--color-accent-blue);
+        }
+
+        .logo {
+            font-size: 1.4em;
+            font-weight: 700;
+            color: var(--color-text-primary);
+        }
+
+        .profile {
+            padding: 6px 12px;
+            border-radius: var(--border-radius-sm);
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--color-accent-blue);
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .profile:hover { background-color: rgba(255, 255, 255, 0.2); }
+
+        /* --- Меню и Ввод --- */
+        .screen {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-width: 450px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: var(--color-card-bg);
+            border-radius: var(--border-radius-lg);
+        }
+        
+        h2 { 
+            color: var(--color-text-primary); 
+            font-weight: 700; 
+            border-bottom: 1px solid #333; 
+            padding-bottom: 10px;
+        }
+
+        input[type="text"] {
+            padding: 12px;
+            border: 1px solid #444;
+            background-color: #000; 
+            color: var(--color-text-primary);
+            border-radius: var(--border-radius-sm);
+            font-size: 1em;
+            width: 100%;
+            box-sizing: border-box;
+            font-family: var(--font-body);
+        }
+
+        /* --- ОБНОВЛЕННЫЙ СТИЛЬ КНОПОК (Прозрачный, современный) --- */
+        .btn {
+             padding: 12px 20px;
+             border: 1px solid transparent; /* Добавляем прозрачную рамку */
+             border-radius: var(--border-radius-sm);
+             font-weight: 500;
+             cursor: pointer;
+             transition: all 0.2s;
+             text-transform: uppercase;
+             letter-spacing: 0.5px;
+             font-family: var(--font-body);
+             background-color: rgba(255, 255, 255, 0.05); /* Легкий полупрозрачный фон */
+             color: var(--color-text-primary);
+        }
+        
+        /* Основная кнопка (CREATE) */
+        .btn.primary { 
+            background: var(--color-accent-red); /* Сохраняем яркий фон для основного действия */
+            color: var(--color-text-primary); 
+            border-color: var(--color-accent-red);
+        }
+        .btn.primary:hover { background: #ff4081; }
+        
+        /* Второстепенная кнопка (JOIN) */
+        .btn.secondary { 
+            background: rgba(3, 169, 244, 0.2); /* Полупрозрачный акцентный фон */
+            color: var(--color-accent-blue);
+            border-color: var(--color-accent-blue);
+        }
+        .btn.secondary:hover { background: rgba(3, 169, 244, 0.3); }
+        
+        /* Темная кнопка (BACK/EXIT) */
+        .btn.dark { 
+            background-color: rgba(255, 255, 255, 0.05); /* Очень легкий фон */
+            color: var(--color-text-secondary); 
+            border-color: #333;
+        }
+        .btn.dark:hover { background-color: rgba(255, 255, 255, 0.1); }
+        /* --- КОНЕЦ СТИЛЯ КНОПОК --- */
+
+        /* --- Экраны Видео и Чат (Общая Сетка) --- */
+        #watch-screen {
+            display: grid;
+            grid-template-columns: 3fr 1fr; /* Десктоп: Видео 3, Чат 1 */
+            gap: 20px;
+            padding: 0;
+        }
+        
+        /* Видео Колонка */
+        #video-column {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        #player-wrapper {
+            position: relative;
+            width: 100%;
+            height: 0;
+            padding-bottom: 56.25%; /* 16:9 соотношение */
+            overflow: hidden;
+            border-radius: var(--border-radius-lg);
+            background-color: #000;
+        }
+
+        #player { 
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        #status-overlay {
+            position: absolute; 
+            top: 10px; 
+            left: 10px; 
+            padding: 6px 10px; 
+            background: rgba(0, 0, 0, 0.7); 
+            border-radius: 4px; 
+            color: var(--color-accent-blue); 
+            font-weight: 500; 
+            font-size: 0.9em;
+        }
+        
+        /* Чат Колонка */
+        #chat-column {
+             min-height: 500px;
+        }
+
+        #chat-card {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+            background-color: var(--color-card-bg);
+            border-radius: var(--border-radius-lg);
+        }
+        
+        h3 { color: var(--color-text-primary); margin-top: 0; padding-bottom: 8px; border-bottom: 1px solid #333; font-weight: 500;}
+
+        #chat-box {
+            flex-grow: 1;
+            overflow-y: auto;
+            max-height: 400px; 
+            padding-right: 8px;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+        }
+        
+        .message-row {
+            padding: 6px 0;
+        }
+        
+        .user-message { 
+            color: var(--color-text-primary); 
+            background-color: #333; 
+            padding: 8px 12px;
+            border-radius: 15px;
+            margin: 5px 0;
+            display: inline-block;
+            max-width: 80%;
+        }
+
+        /* Стиль для сообщений, отправленных текущим пользователем */
+        .my-message-container {
+            display: flex;
+            justify-content: flex-end;
+        }
+        .my-message {
+            background-color: var(--color-accent-red); 
+            color: var(--color-text-primary);
+            padding: 8px 12px;
+            border-radius: 15px;
+            margin: 5px 0;
+            display: inline-block;
+            max-width: 80%;
+        }
+        
+        /* Системные сообщения */
+        .system-message { 
+            color: var(--color-text-secondary); 
+            font-size: 0.8em;
+            text-align: center;
+            margin: 10px 0;
+        }
+        
+        #chat-input-container {
+            display: flex;
+            gap: 8px;
+            padding-top: 10px;
+            border-top: 1px solid #333;
+        }
+
+        #chat-input {
+            flex-grow: 1;
+            padding: 10px;
+            border-color: #333;
+            background-color: #2a2a2a;
+        }
+        
+        /* Стиль кнопки отправки чата */
+        #chat-input-container #send-btn {
+             background-color: var(--color-accent-red);
+             border-radius: var(--border-radius-sm);
+             color: var(--color-text-primary);
+             font-weight: 700;
+             font-size: 1em;
+             padding: 12px 18px; 
+             transition: background-color 0.2s;
+        }
+        #chat-input-container #send-btn:hover { background-color: #ff4081; }
+
+
+        /* --- АДАПТАЦИЯ (Мобильный вид: Плеер Сверху, Чат Снизу) --- */
+        @media (max-width: 900px) {
+            .container { padding: 0; } 
+            
+            #watch-screen {
+                grid-template-columns: 1fr; 
+                gap: 0; 
+            }
+            
+            #video-column { order: 1; } 
+            #chat-column { order: 2; } 
+            
+            #chat-card {
+                min-height: 40vh; 
+                border-radius: 0; 
+                padding: 10px;
+                flex-grow: 1;
+            }
+            #chat-box { max-height: unset; height: 100%; } 
+
+            #video-column .btn.dark {
+                display: none; 
+            }
+        }
+        
+        #main-menu-header { display: flex; }
+        #watch-header { display: none; }
+        
+        @media (min-width: 901px) {
+             #watch-header { display: flex; }
+        }
+        
+    </style>
+    </head>
+<body>
+
+    <div class="container">
+        
+        <header id="main-menu-header">
+            <div class="logo">QvorStream</div>
+            <div class="profile" onclick="changeUser()">
+                <span id="display-username">Имя</span>
+            </div>
+        </header>
+
+        <header id="watch-header" style="display: none;">
+             <button class="header-button" onclick="showMainMenu()">✕</button>
+             <div class="logo">Текущая Сессия</div>
+             <div class="profile">
+                <span id="current-room-display">####</span>
+            </div>
+        </header>
+
+
+        <div id="main-menu-screen" class="screen" style="display: none;">
+            <h2>Добро пожаловать</h2>
+            <button class="btn primary" onclick="createRoom()">СОЗДАТЬ НОВУЮ СЕССИЮ</button>
+            <button class="btn secondary" onclick="showJoinInput()">ПРИСОЕДИНИТЬСЯ ПО КОДУ</button>
+        </div>
+
+        <div id="join-input-screen" class="screen" style="display: none;">
+            <h2>Введите Код Комнаты</h2>
+            <input type="text" id="join-code" placeholder="4-значный код комнаты" maxlength="4">
+            <button class="btn secondary" onclick="joinRoom()">ВОЙТИ</button>
+            <button class="btn dark" onclick="showMainMenu()">Назад</button>
+        </div>
+        
+        <div id="load-video-screen" class="screen" style="display: none;">
+            <h2 id="room-info">Комната XXXX</h2>
+            <input type="text" id="host-video-link" placeholder="Ссылка на YouTube">
+            <button class="btn primary" onclick="loadVideo()">ЗАГРУЗИТЬ И НАЧАТЬ</button>
+            
+            <p style="color:var(--color-text-secondary); font-size: 0.9em; font-weight: 500;">
+                Только хост может загружать видео.
+            </p>
+            
+            <p style="color:var(--color-text-secondary); margin-top: 5px;">Ссылка-приглашение:</p>
+            <div style="display: flex; gap: 8px;">
+                <input type="text" id="share-link-input" readonly style="flex-grow: 1;">
+                <button class="btn dark" onclick="copyShareLink()">Копировать</button>
+            </div>
+            
+            <button class="btn dark" onclick="showMainMenu()">Выйти из сессии</button>
+        </div>
+
+        <div id="watch-screen" style="display: none;">
+            
+            <div id="video-column">
+                <div id="player-wrapper">
+                    <div id="player"></div>
+                    
+                    <div id="status-overlay">
+                        <span id="video-status">Статус: Ожидание</span>
+                    </div>
+                </div>
+                 <button class="btn dark" onclick="showMainMenu()">🚪 Выйти из Сессии</button>
+            </div>
+            
+            <div id="chat-column">
+                <div id="chat-card">
+                    <h3>Чат Сессии</h3>
+                    
+                    <div id="chat-box">
+                        </div>
+                    
+                    <div id="chat-input-container">
+                        <input type="text" id="chat-input" placeholder="Сообщение...">
+                        <button id="send-btn" onclick="sendMessage()">➤</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // --- ИНИЦИАЛИЗАЦИЯ ПЕРЕМЕННЫХ ---
+        let userName = localStorage.getItem('qvorstream_username') || "Имя";
+        let currentRoomCode = null;
+        let ws; 
+        let isHost = false; 
+        let ytPlayer; 
+        
+        const YT_STATE = { PAUSED: 2, PLAYING: 1, BUFFERING: 3 };
+        const screens = ['main-menu-screen', 'join-input-screen', 'load-video-screen', 'watch-screen'];
+        const chatBox = document.getElementById('chat-box');
+        const chatInput = document.getElementById('chat-input');
+        const videoStatus = document.getElementById('video-status');
+        
+        document.getElementById('display-username').textContent = userName;
+
+        const SYMBOLS = ['●', '▲', '█', '»'];
+        let symbolIndex = 0;
+        
+        function getNextSymbol() {
+            const symbol = SYMBOLS[symbolIndex];
+            symbolIndex = (symbolIndex + 1) % SYMBOLS.length;
+            return symbol;
+        }
+
+        // --- YOUTUBE API ---
+        const tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        const firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        window.onYouTubeIframeAPIReady = function() {
+            console.log(">> YouTube API loaded.");
+        }
+
+        function createYouTubePlayer(videoId) {
+            if (ytPlayer && typeof ytPlayer.destroy === 'function') {
+                ytPlayer.destroy();
+            }
+            
+            ytPlayer = new YT.Player('player', {
+                videoId: videoId,
+                playerVars: {
+                    'autoplay': 1,
+                    'controls': 1, 
+                    'playsinline': 1,
+                    'disablekb': isHost ? 0 : 1 
+                },
+                events: {
+                    'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+        }
+        
+        let lastKnownTime = 0;
+        
+        function onPlayerReady(event) {
+            event.target.playVideo();
+            if (isHost) {
+                setInterval(checkSeek, 500); 
+            }
+        }
+        
+        function checkSeek() {
+            if (!isHost || !ytPlayer || !ytPlayer.getCurrentTime) return;
+
+            const currentTime = ytPlayer.getCurrentTime();
+            if (Math.abs(currentTime - lastKnownTime) > 1.5 && ytPlayer.getPlayerState() !== YT_STATE.BUFFERING) {
+                sendSyncCommand('seek', currentTime);
+            }
+            lastKnownTime = currentTime;
+        }
+
+
+        function onPlayerStateChange(event) {
+            if (!isHost) return; 
+            
+            const time = ytPlayer.getCurrentTime();
+            let action = null;
+            
+            if (event.data === YT_STATE.PAUSED) {
+                action = 'pause';
+            } else if (event.data === YT_STATE.PLAYING) {
+                action = 'play';
+            }
+            
+            if (action) {
+                sendSyncCommand(action, time);
+            }
+        }
+        
+        // --- WEBSOCKET ЛОГИКА (ОБНОВЛЕНИЕ ДЛЯ RENDER) ---
+        
+        // 🚨🚨 АДРЕС ВАШЕГО СЕРВЕРА RENDER, настроенного для работы через интернет 🚨🚨
+        const RENDER_WS_URL = "wss://qvorstream.onrender.com/"; 
+
+        function initializeWebSocket() {
+            if (ws) {
+                ws.close();
+            }
+
+            // Подключение к развернутому серверу (Render)
+            ws = new WebSocket(RENDER_WS_URL);
+
+            ws.onopen = () => {
+                addChatMessage(`[${getNextSymbol()} System] Соединение установлено.`, 'system-message');
+                if (window.pendingAction) {
+                    window.pendingAction();
+                    window.pendingAction = null;
+                }
+            };
+
+            ws.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                handleServerMessage(data);
+            };
+
+            ws.onclose = () => {
+                addChatMessage(`[${getNextSymbol()} System] Соединение потеряно.`, 'system-message');
+                currentRoomCode = null;
+                isHost = false; 
+            };
+
+            ws.onerror = (error) => {
+                console.error("WS Error:", error);
+                addChatMessage(`[${getNextSymbol()} System] Ошибка соединения.`, 'system-message');
+            };
+        }
+        
+        function handleServerMessage(data) {
+            if (data.type === 'room_created') {
+                currentRoomCode = data.code;
+                isHost = true; 
+                document.getElementById('room-info').textContent = `Комната ${currentRoomCode} | Вы Хост`;
+                document.getElementById('share-link-input').value = `${location.origin}/?code=${currentRoomCode}`;
+                document.getElementById('current-room-display').textContent = data.code;
+                
+                showLoadVideoScreen();
+                
+                addChatMessage(`[${getNextSymbol()} Host] Комната создана: ${currentRoomCode}`, 'system-message');
+            
+            } else if (data.type === 'sync_initial' || data.type === 'load_video') {
+                currentRoomCode = data.code || currentRoomCode;
+
+                const urlToLoad = data.url || (data.data ? data.data.videoUrl : null);
+                const videoId = getYouTubeVideoId(urlToLoad);
+
+                if (videoId) {
+                    createYouTubePlayer(videoId);
+                    showWatchScreen(); 
+                    document.getElementById('current-room-display').textContent = currentRoomCode;
+                    
+                    if (data.type === 'sync_initial' && data.data && data.data.lastSync) {
+                        addChatMessage(`[${getNextSymbol()} System] Получено начальное состояние.`, 'system-message');
+                    }
+                    videoStatus.textContent = `Статус: ${getNextSymbol()} Видео загружено`;
+                } else if (urlToLoad) {
+                    document.getElementById('player').innerHTML = `<iframe src="${urlToLoad}" style="width:100%; height:100%; border:none;" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>`;
+                    showWatchScreen(); 
+                    document.getElementById('current-room-display').textContent = currentRoomCode;
+                    videoStatus.textContent = `Статус: ${getNextSymbol()} Сторонний плеер`;
+                }
+            
+            } else if (data.type === 'chat') {
+                const isMine = data.sender === userName;
+                addChatMessage(`**${data.sender}**: ${data.text}`, isMine ? 'my-message' : 'user-message', isMine);
+            
+            } else if (data.type === 'sync') {
+                // ОБНОВЛЕНИЕ СТАТУСА ПЛЕЕРА
+                videoStatus.textContent = `Статус: ${getNextSymbol()} ${data.action.toUpperCase()} @ ${data.time.toFixed(1)}с`;
+
+                if (ytPlayer && !isHost && ytPlayer.seekTo) {
+                    ytPlayer.seekTo(data.time, true); 
+                    if (data.action === 'play') {
+                        ytPlayer.playVideo();
+                    } else if (data.action === 'pause') {
+                        ytPlayer.pauseVideo();
+                    }
+                }
+                // Сообщения о синхронизации в чат не добавляются.
+
+            } else if (data.type === 'error') {
+                alert(`Ошибка: ${data.message}`);
+                videoStatus.textContent = `Статус: 🚫 Ошибка ${getNextSymbol()}`;
+                showMainMenu(); 
+            }
+        }
+        
+        // --- ЛОГИКА МЕНЮ И КОМАНД ---
+        
+        function setHeaderVisibility(screenId) {
+            document.getElementById('main-menu-header').style.display = 'none';
+            document.getElementById('watch-header').style.display = 'none';
+            
+            if (screenId === 'watch-screen') {
+                // На мобильных кнопка "X" (Назад) всегда показывается
+                document.getElementById('watch-header').style.display = 'flex'; 
+            } else {
+                 document.getElementById('main-menu-header').style.display = 'flex';
+            }
+        }
+        
+        function showScreen(id) {
+            screens.forEach(screenId => {
+                const element = document.getElementById(screenId);
+                if (screenId === id) {
+                    element.style.display = (screenId === 'watch-screen') ? 'grid' : 'flex';
+                } else {
+                    element.style.display = 'none';
+                }
+            });
+            setHeaderVisibility(id);
+        }
+        
+        function showMainMenu() { 
+            showScreen('main-menu-screen'); 
+            currentRoomCode = null;
+            isHost = false; 
+            document.getElementById('room-info').textContent = `Комната XXXX`;
+            document.getElementById('current-room-display').textContent = '####';
+        }
+        function showJoinInput() { showScreen('join-input-screen'); }
+        function showLoadVideoScreen() { showScreen('load-video-screen'); }
+        function showWatchScreen() { 
+            showScreen('watch-screen'); 
+            const exitBtn = document.querySelector('#video-column .btn.dark');
+            if (window.innerWidth <= 900 && exitBtn) {
+                 exitBtn.style.display = 'none';
+            } else if (exitBtn) {
+                 exitBtn.style.display = 'block';
+            }
+        } 
+
+        function createRoom() {
+            const createAction = () => {
+                if (ws && ws.readyState === WebSocket.OPEN) {
+                    ws.send(JSON.stringify({ type: 'create', sender: userName }));
+                } else {
+                    alert("Соединение не готово. Попытка переподключения...");
+                }
+            };
+
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                createAction();
+            } else {
+                window.pendingAction = createAction; 
+                initializeWebSocket();
+            }
+        }
+
+        function joinRoom() {
+            const code = document.getElementById('join-code').value.trim();
+            const joinAction = () => {
+                if (code) {
+                    isHost = false; 
+                    ws.send(JSON.stringify({ type: 'join', code: code, sender: userName }));
+                    addChatMessage(`[${getNextSymbol()} System] Попытка подключения к комнате ${code}...`, 'system-message');
+                } else {
+                    alert("Введите код комнаты.");
+                }
+            };
+
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                joinAction();
+            } else {
+                window.pendingAction = joinAction; 
+                initializeWebSocket();
+            }
+        }
+        
+        function loadVideo() {
+            const url = document.getElementById('host-video-link').value.trim();
+            if (url && currentRoomCode && ws && ws.readyState === WebSocket.OPEN) {
+                const loadCommand = {
+                    type: 'load_video',
+                    code: currentRoomCode,
+                    sender: userName,
+                    url: url
+                };
+                ws.send(JSON.stringify(loadCommand));
+            } else {
+                alert("Введите ссылку на видео!");
+            }
+        }
+
+        function sendSyncCommand(action, time) {
+            if (!isHost || !currentRoomCode || !ws || ws.readyState !== WebSocket.OPEN) return;
+            
+            const syncCommand = {
+                type: 'sync',
+                code: currentRoomCode,
+                action: action,
+                time: time
+            };
+            ws.send(JSON.stringify(syncCommand));
+        }
+        
+        // --- ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ---
+        
+        function getYouTubeVideoId(url) {
+            try {
+                const urlObj = new URL(url);
+                if (urlObj.hostname.includes('youtube.com')) {
+                    return urlObj.searchParams.get('v');
+                } else if (urlObj.hostname.includes('youtu.be')) {
+                    return urlObj.pathname.substring(1);
+                }
+                return null;
+            } catch (e) {
+                return null; 
+            }
+        }
+
+        function sendMessage() {
+            const text = chatInput.value.trim();
+            if (!text || !currentRoomCode) return;
+
+            const chatCommand = {
+                type: 'chat',
+                code: currentRoomCode,
+                sender: userName,
+                text: text
+            };
+            ws.send(JSON.stringify(chatCommand));
+            chatInput.value = '';
+        }
+        
+        function addChatMessage(message, className = '', isMine = false) {
+            const container = document.createElement('div');
+            
+            if (isMine) {
+                container.classList.add('my-message-container');
+                const p = document.createElement('div');
+                p.classList.add('my-message');
+                p.innerHTML = message.replace(`**${userName}**: `, '');
+                container.appendChild(p);
+            } else if (className === 'user-message') {
+                const p = document.createElement('div');
+                p.classList.add('user-message');
+                p.innerHTML = message;
+                container.appendChild(p);
+            } else {
+                container.classList.add('message-row');
+                container.classList.add(className);
+                container.innerHTML = message;
+            }
+            
+            chatBox.appendChild(container);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function changeUser() {
+            const newName = prompt("Введите новое имя:", userName);
+            if (newName && newName.trim()) {
+                userName = newName.trim().substring(0, 15);
+                localStorage.setItem('qvorstream_username', userName);
+                document.getElementById('display-username').textContent = userName;
+            }
+        }
+        
+        function copyShareLink() {
+            const linkInput = document.getElementById('share-link-input');
+            linkInput.select();
+            linkInput.setSelectionRange(0, 99999); 
+            try {
+                document.execCommand("copy");
+                alert("Ссылка скопирована!");
+            } catch (err) {
+                alert("Не удалось скопировать ссылку.");
+            }
+        }
+
+        // --- ЗАПУСК ---
+        
+        initializeWebSocket(); 
+        
+        const urlParams = new URLSearchParams(window.location.search);
+        const codeFromUrl = urlParams.get('code');
+
+        if (codeFromUrl) {
+            document.getElementById('join-code').value = codeFromUrl;
+            showJoinInput();
+        } else {
+            showMainMenu();
+        }
+        
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+        
+        // Корректировка хедера при изменении размера окна
+        window.addEventListener('resize', () => {
+            if (document.getElementById('watch-screen').style.display === 'grid') {
+                 showWatchScreen(); 
+            }
+        });
+    </script>
+</body>
+</html>

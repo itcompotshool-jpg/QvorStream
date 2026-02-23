@@ -3,130 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>QUORVOX | MOBILE FIX</title>
+    <title>QUORVOX | FINAL FIX</title>
     <script src="https://vk.com/js/api/videoplayer.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@700&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
     <style>
         :root { --accent: #ff0055; --bg: #050505; --panel: #0a0a0a; --glass: rgba(255, 255, 255, 0.05); }
-        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
         
-        /* Фиксируем body, чтобы избежать "резинового" скролла на iOS */
-        body, html { 
+        html, body { 
+            height: 100%; 
             height: 100dvh; 
             background: var(--bg); 
             color: white; 
             font-family: 'Montserrat', sans-serif; 
             overflow: hidden; 
-            position: fixed;
             width: 100%;
+            position: fixed; /* Важно для фиксации экрана на мобилках */
         }
 
-        /* МЕНЮ */
-        #main-menu { position: fixed; inset: 0; z-index: 2000; background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .logo { font-family: 'Syncopate'; color: var(--accent); font-size: 3rem; margin-bottom: 30px; letter-spacing: 5px; }
+        #main-menu { position: fixed; inset: 0; z-index: 5000; background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .logo { font-family: 'Syncopate'; color: var(--accent); font-size: 2.5rem; margin-bottom: 30px; letter-spacing: 5px; }
 
-        /* ЭКРАН ПРИЛОЖЕНИЯ */
         #app-screen { 
             display: none; 
+            height: 100%; 
             height: 100dvh; 
             flex-direction: row; 
         }
 
-        /* ПЛЕЕР */
+        /* Видео зона */
         .player-side { 
             position: relative; 
             flex: 1; 
             background: #000; 
             display: flex; 
             flex-direction: column; 
-            overflow: hidden;
+            z-index: 10;
         }
-        #vk-player-mount { width: 100%; height: 100%; }
+        #vk-player-mount { width: 100%; height: 100%; pointer-events: auto; }
 
-        /* ЧАТ-КОНТЕЙНЕР */
+        /* Кнопка пульта - поднята выше всех */
+        #toggle-remote-btn { 
+            position: absolute; top: 15px; left: 15px; z-index: 2000; 
+            background: var(--accent); border: none; color: white; 
+            padding: 10px 18px; border-radius: 8px; font-weight: bold; font-size: 12px; cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 0, 85, 0.3);
+        }
+
+        .remote-panel { 
+            position: absolute; top: 65px; left: 15px; width: 280px;
+            background: rgba(10, 10, 10, 0.98); border: 1px solid var(--accent); 
+            padding: 15px; border-radius: 15px; display: none; z-index: 2001;
+        }
+        .remote-panel.active { display: block; }
+
+        /* Чат зона */
         .chat-side { 
             width: 350px; 
             background: var(--panel); 
             display: flex; 
             flex-direction: column; 
             border-left: 1px solid var(--glass);
-            height: 100%;
+            z-index: 20;
         }
 
-        /* АДАПТИВ ПОД МОБИЛКИ */
         @media (max-width: 900px) {
             #app-screen { flex-direction: column; }
-            .player-side { 
-                height: 35vh; /* Плеер занимает 35% высоты и не двигается */
-                min-height: 220px;
-                flex: none; 
-            }
-            .chat-side { 
-                width: 100%; 
-                flex: 1; /* ЧАТ занимает всё оставшееся место */
-                height: 65vh; 
-                overflow: hidden;
-            }
+            .player-side { height: 35%; flex: none; }
+            .chat-side { width: 100%; flex: 1; height: 65%; border-left: none; border-top: 1px solid var(--glass); }
         }
 
-        /* ПУЛЬТ */
-        #toggle-remote-btn { 
-            position: absolute; top: 10px; left: 10px; z-index: 1000; 
-            background: var(--accent); border: none; color: white; 
-            padding: 8px 15px; border-radius: 8px; font-weight: bold; font-size: 11px; cursor: pointer;
-        }
-        .remote-panel { 
-            position: absolute; top: 50px; left: 10px; width: 280px;
-            background: rgba(0,0,0,0.95); border: 1px solid var(--accent); 
-            padding: 15px; border-radius: 15px; display: none; z-index: 1001;
-        }
-        .remote-panel.active { display: block; }
-        .btn-s { background: #222; border: none; color: white; padding: 10px; border-radius: 8px; cursor: pointer; font-size: 11px; font-weight: bold; }
-
-        /* ШАПКА ЧАТА */
         .chat-header { 
-            padding: 15px; 
-            background: #000; 
-            border-bottom: 1px solid var(--glass);
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center;
-            flex-shrink: 0; /* Чтобы не сжималась */
+            padding: 12px 15px; background: #000; border-bottom: 1px solid var(--glass);
+            display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;
         }
-        .room-badge { color: var(--accent); font-family: 'Syncopate'; font-size: 12px; letter-spacing: 2px; }
+        .room-badge { color: var(--accent); font-family: 'Syncopate'; font-size: 11px; letter-spacing: 2px; }
 
-        /* САМИ СООБЩЕНИЯ - ЕДИНСТВЕННАЯ ЗОНА СО СКРОЛЛОМ */
         #chat-msgs { 
-            flex: 1; 
-            padding: 15px; 
-            overflow-y: auto; 
-            display: flex; 
-            flex-direction: column; 
-            gap: 12px;
-            -webkit-overflow-scrolling: touch; 
+            flex: 1; padding: 15px; overflow-y: auto; 
+            display: flex; flex-direction: column; gap: 10px;
+            background: var(--bg);
+            -webkit-overflow-scrolling: touch;
         }
 
-        .msg { background: var(--glass); padding: 10px 15px; border-radius: 15px; font-size: 13px; max-width: 85%; position: relative; cursor: pointer; align-self: flex-start; }
-        .msg-header { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; color: var(--accent); font-weight: bold; font-size: 10px; }
-        .msg-ava { width: 20px; height: 20px; border-radius: 50%; }
+        .msg { background: var(--glass); padding: 10px 12px; border-radius: 12px; font-size: 13px; max-width: 85%; align-self: flex-start; word-wrap: break-word; }
+        .msg-header { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; color: var(--accent); font-weight: bold; font-size: 10px; }
+        .msg-ava { width: 18px; height: 18px; border-radius: 50%; }
 
-        .react-badge { position: absolute; bottom: -8px; right: -5px; background: #1a1a1a; border: 1px solid var(--accent); border-radius: 10px; padding: 1px 5px; font-size: 11px; }
-
-        #emoji-picker { position: fixed; display: none; background: #1a1a1a; padding: 10px; border-radius: 20px; border: 1px solid var(--accent); gap: 10px; z-index: 3000; }
-        .emo-btn { font-size: 20px; cursor: pointer; transition: 0.2s; }
-
-        /* ВВОД - ВСЕГДА ПРИЖАТ К НИЗУ */
+        /* Ввод сообщений */
         .input-bar { 
-            padding: 12px; 
-            background: #000; 
-            display: flex; 
-            gap: 8px; 
-            border-top: 1px solid var(--glass);
-            flex-shrink: 0; 
-            padding-bottom: calc(12px + env(safe-area-inset-bottom)); /* Учет челок/полосок снизу */
+            padding: 10px; background: #000; display: flex; gap: 8px; 
+            border-top: 1px solid var(--glass); flex-shrink: 0;
+            padding-bottom: max(10px, env(safe-area-inset-bottom));
         }
-        .input-bar input { flex: 1; background: #151515; border: 1px solid #333; color: white; padding: 12px 15px; border-radius: 25px; font-size: 16px; /* 16px предотвращает зум на iOS */ }
-        .send-btn { background: white; border: none; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; }
+        .input-bar input { 
+            flex: 1; background: #1a1a1a; border: 1px solid #333; 
+            color: white; padding: 12px 16px; border-radius: 20px; font-size: 16px;
+        }
+        .send-btn { 
+            background: var(--accent); border: none; width: 45px; height: 45px; 
+            border-radius: 50%; display: flex; align-items: center; 
+            justify-content: center; cursor: pointer; flex-shrink: 0;
+        }
+
+        .btn-s { background: #222; border: none; color: white; padding: 10px; border-radius: 8px; cursor: pointer; font-size: 11px; font-weight: bold; }
+        
+        #emoji-picker { position: fixed; display: none; background: #1a1a1a; padding: 10px; border-radius: 15px; border: 1px solid var(--accent); gap: 10px; z-index: 4000; }
+        .emo-btn { font-size: 22px; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -139,11 +122,10 @@
 
     <div id="app-screen">
         <div class="player-side">
-            <button id="toggle-remote-btn" style="display:none;" onclick="document.getElementById('remote-p').classList.toggle('active')">🎮 ПУЛЬТ</button>
-            
+            <button id="toggle-remote-btn" style="display:none;" onclick="toggleRemote(event)">🎮 ПУЛЬТ</button>
             <div class="remote-panel" id="remote-p">
                 <input type="text" id="v-url" placeholder="Ссылка на VK..." style="width:100%; padding:10px; background:#000; border:1px solid #333; color:white; border-radius:8px; margin-bottom:10px;">
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px;">
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
                     <button class="btn-s" onclick="sync('play')">PLAY</button>
                     <button class="btn-s" onclick="sync('pause')">PAUSE</button>
                     <button class="btn-s" onclick="seek(-10)">-10 СЕК</button>
@@ -157,13 +139,13 @@
         <div class="chat-side">
             <div class="chat-header">
                 <div class="room-badge" id="room-id-display">#----</div>
-                <div onclick="alert('Настройки профиля')" style="cursor:pointer">⚙️</div>
+                <div onclick="alert('Settings')" style="cursor:pointer; font-size: 20px;">⚙️</div>
             </div>
             <div id="chat-msgs"></div>
             <div class="input-bar">
-                <input type="text" id="m-val" placeholder="Написать..." onkeypress="if(event.keyCode==13) sendMsg()">
+                <input type="text" id="m-val" placeholder="Сообщение..." onkeypress="if(event.keyCode==13) sendMsg()">
                 <button class="send-btn" onclick="sendMsg()">
-                    <svg viewBox="0 0 24 24" width="20" fill="black"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
+                    <svg viewBox="0 0 24 24" width="20" fill="white"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
                 </button>
             </div>
         </div>
@@ -181,18 +163,22 @@
         const user = { name: 'User' + Math.floor(Math.random()*99), ava: 'https://i.pravatar.cc/100' };
 
         function appAction(mode) {
-            ws = new WebSocket((location.protocol === 'https:' ? 'wss://' : 'ws://') + location.host);
+            // Исправленный протокол для работы на Render и других хостингах
+            const protocol = location.protocol === 'https:' ? 'wss://' : 'ws://';
+            ws = new WebSocket(protocol + location.host);
+            
             ws.onopen = () => {
                 if(mode === 'create') ws.send(JSON.stringify({type:'create'}));
                 else { const c = prompt("Код:"); if(c) ws.send(JSON.stringify({type:'join', code:c})); }
             };
+
             ws.onmessage = (e) => {
                 const d = JSON.parse(e.data);
                 if(d.type === 'room_created' || d.type === 'joined') {
                     document.getElementById('main-menu').style.display = 'none';
                     document.getElementById('app-screen').style.display = 'flex';
                     document.getElementById('room-id-display').innerText = "#" + d.code;
-                    if(d.type === 'room_created') {
+                    if(d.type === 'room_created' || d.isHost) {
                         isHost = true;
                         document.getElementById('toggle-remote-btn').style.display = 'block';
                     }
@@ -210,31 +196,48 @@
                     if(m) m.innerHTML = d.emoji;
                 }
             };
+
+            ws.onerror = (err) => console.error("WS Error:", err);
         }
 
         function initPlayer(u) {
             const mount = document.getElementById('vk-player-mount');
             mount.innerHTML = `<iframe id="vk-ifr" src="${u}${u.includes('?')?'&':'?'}js_api=1" style="width:100%;height:100%;border:none;" allow="autoplay;fullscreen"></iframe>`;
-            setTimeout(() => { player = VK.VideoPlayer(document.getElementById('vk-ifr')); }, 600);
+            setTimeout(() => { 
+                if(window.VK && VK.VideoPlayer) {
+                    player = VK.VideoPlayer(document.getElementById('vk-ifr'));
+                }
+            }, 800);
+        }
+
+        function toggleRemote(e) {
+            e.stopPropagation();
+            document.getElementById('remote-p').classList.toggle('active');
         }
 
         function loadVideo() {
             let val = document.getElementById('v-url').value;
             if(val.includes('<iframe')) {
-                let match = val.match(/src="([^"]+)"/);
-                if(match) val = match[1];
+                let m = val.match(/src="([^"]+)"/);
+                if(m) val = m[1];
             }
-            ws.send(JSON.stringify({type:'load_video', url: val}));
+            if(val) ws.send(JSON.stringify({type:'load_video', url: val}));
             document.getElementById('remote-p').classList.remove('active');
         }
 
-        function sync(a) { if(isHost) ws.send(JSON.stringify({type: a})); }
-        function seek(s) { if(isHost) ws.send(JSON.stringify({type:'seek_step', step: s})); }
+        function sync(a) { if(isHost && ws) ws.send(JSON.stringify({type: a})); }
+        function seek(s) { if(isHost && ws) ws.send(JSON.stringify({type:'seek_step', step: s})); }
 
         function sendMsg() {
             const i = document.getElementById('m-val');
-            if(i.value) {
-                ws.send(JSON.stringify({type:'chat', text:i.value, sender:user.name, ava:user.ava, msgId:Date.now()}));
+            if(i.value.trim() && ws && ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({
+                    type: 'chat', 
+                    text: i.value, 
+                    sender: user.name, 
+                    ava: user.ava, 
+                    msgId: Date.now()
+                }));
                 i.value = '';
             }
         }
@@ -242,23 +245,32 @@
         function renderMsg(d) {
             const b = document.getElementById('chat-msgs');
             const div = document.createElement('div');
-            div.className = 'msg'; div.setAttribute('data-id', d.msgId);
+            div.className = 'msg'; 
+            div.setAttribute('data-id', d.msgId);
             div.innerHTML = `<div class="msg-header"><img src="${d.ava}" class="msg-ava"> ${d.sender}</div>${d.text}<div class="react-badge"></div>`;
             div.onclick = (e) => {
+                e.stopPropagation();
                 selMsgId = d.msgId;
                 const p = document.getElementById('emoji-picker');
-                p.style.display = 'flex'; p.style.top = (e.clientY - 40) + 'px'; p.style.left = (e.clientX) + 'px';
+                p.style.display = 'flex'; 
+                p.style.top = (e.clientY - 60) + 'px'; 
+                p.style.left = Math.min(e.clientX, window.innerWidth - 150) + 'px';
             };
             b.appendChild(div);
-            b.scrollTop = b.scrollHeight; // Автопрокрутка вниз при новом сообщении
+            b.scrollTop = b.scrollHeight;
         }
 
         function react(emo) {
-            ws.send(JSON.stringify({type:'reaction', msgId:selMsgId, emoji:emo}));
+            if(ws) ws.send(JSON.stringify({type:'reaction', msgId:selMsgId, emoji:emo}));
             document.getElementById('emoji-picker').style.display = 'none';
         }
 
-        window.onclick = (e) => { if(!e.target.closest('.msg')) document.getElementById('emoji-picker').style.display='none'; }
+        window.onclick = (e) => { 
+            if(!e.target.closest('.msg')) document.getElementById('emoji-picker').style.display='none'; 
+            if(!e.target.closest('.remote-panel') && !e.target.closest('#toggle-remote-btn')) {
+                document.getElementById('remote-p').classList.remove('active');
+            }
+        }
     </script>
 </body>
 </html>

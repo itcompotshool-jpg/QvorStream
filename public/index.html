@@ -3,31 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>QUORVOX | FULL FIX</title>
+    <title>QUORVOX | MOBILE FIX</title>
     <script src="https://vk.com/js/api/videoplayer.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@700&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
     <style>
         :root { --accent: #ff0055; --bg: #050505; --panel: #0a0a0a; --glass: rgba(255, 255, 255, 0.05); }
         * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
         
-        body, html { height: 100dvh; background: var(--bg); color: white; font-family: 'Montserrat', sans-serif; overflow: hidden; }
+        /* Фиксируем body, чтобы избежать "резинового" скролла на iOS */
+        body, html { 
+            height: 100dvh; 
+            background: var(--bg); 
+            color: white; 
+            font-family: 'Montserrat', sans-serif; 
+            overflow: hidden; 
+            position: fixed;
+            width: 100%;
+        }
 
         /* МЕНЮ */
         #main-menu { position: fixed; inset: 0; z-index: 2000; background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .logo { font-family: 'Syncopate'; color: var(--accent); font-size: 3rem; margin-bottom: 30px; letter-spacing: 5px; }
 
         /* ЭКРАН ПРИЛОЖЕНИЯ */
-        #app-screen { display: none; height: 100dvh; flex-direction: row; }
+        #app-screen { 
+            display: none; 
+            height: 100dvh; 
+            flex-direction: row; 
+        }
 
-        .player-side { position: relative; flex: 1; background: #000; display: flex; flex-direction: column; }
+        /* ПЛЕЕР */
+        .player-side { 
+            position: relative; 
+            flex: 1; 
+            background: #000; 
+            display: flex; 
+            flex-direction: column; 
+            overflow: hidden;
+        }
         #vk-player-mount { width: 100%; height: 100%; }
 
-        .chat-side { width: 350px; background: var(--panel); display: flex; flex-direction: column; border-left: 1px solid var(--glass); }
+        /* ЧАТ-КОНТЕЙНЕР */
+        .chat-side { 
+            width: 350px; 
+            background: var(--panel); 
+            display: flex; 
+            flex-direction: column; 
+            border-left: 1px solid var(--glass);
+            height: 100%;
+        }
 
+        /* АДАПТИВ ПОД МОБИЛКИ */
         @media (max-width: 900px) {
             #app-screen { flex-direction: column; }
-            .chat-side { width: 100%; flex: 1; }
-            .player-side { height: 35vh; flex: none; }
+            .player-side { 
+                height: 35vh; /* Плеер занимает 35% высоты и не двигается */
+                min-height: 220px;
+                flex: none; 
+            }
+            .chat-side { 
+                width: 100%; 
+                flex: 1; /* ЧАТ занимает всё оставшееся место */
+                height: 65vh; 
+                overflow: hidden;
+            }
         }
 
         /* ПУЛЬТ */
@@ -44,15 +83,30 @@
         .remote-panel.active { display: block; }
         .btn-s { background: #222; border: none; color: white; padding: 10px; border-radius: 8px; cursor: pointer; font-size: 11px; font-weight: bold; }
 
-        /* ЧАТ */
+        /* ШАПКА ЧАТА */
         .chat-header { 
-            padding: 15px; background: #000; border-bottom: 1px solid var(--glass);
-            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px; 
+            background: #000; 
+            border-bottom: 1px solid var(--glass);
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            flex-shrink: 0; /* Чтобы не сжималась */
         }
         .room-badge { color: var(--accent); font-family: 'Syncopate'; font-size: 12px; letter-spacing: 2px; }
 
-        #chat-msgs { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
-        .msg { background: var(--glass); padding: 10px 15px; border-radius: 15px; font-size: 13px; max-width: 85%; position: relative; cursor: pointer; }
+        /* САМИ СООБЩЕНИЯ - ЕДИНСТВЕННАЯ ЗОНА СО СКРОЛЛОМ */
+        #chat-msgs { 
+            flex: 1; 
+            padding: 15px; 
+            overflow-y: auto; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 12px;
+            -webkit-overflow-scrolling: touch; 
+        }
+
+        .msg { background: var(--glass); padding: 10px 15px; border-radius: 15px; font-size: 13px; max-width: 85%; position: relative; cursor: pointer; align-self: flex-start; }
         .msg-header { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; color: var(--accent); font-weight: bold; font-size: 10px; }
         .msg-ava { width: 20px; height: 20px; border-radius: 50%; }
 
@@ -61,10 +115,18 @@
         #emoji-picker { position: fixed; display: none; background: #1a1a1a; padding: 10px; border-radius: 20px; border: 1px solid var(--accent); gap: 10px; z-index: 3000; }
         .emo-btn { font-size: 20px; cursor: pointer; transition: 0.2s; }
 
-        /* ВВОД */
-        .input-bar { padding: 12px; background: #000; display: flex; gap: 8px; border-top: 1px solid var(--glass); }
-        .input-bar input { flex: 1; background: #151515; border: 1px solid #333; color: white; padding: 12px 15px; border-radius: 25px; }
-        .send-btn { background: white; border: none; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        /* ВВОД - ВСЕГДА ПРИЖАТ К НИЗУ */
+        .input-bar { 
+            padding: 12px; 
+            background: #000; 
+            display: flex; 
+            gap: 8px; 
+            border-top: 1px solid var(--glass);
+            flex-shrink: 0; 
+            padding-bottom: calc(12px + env(safe-area-inset-bottom)); /* Учет челок/полосок снизу */
+        }
+        .input-bar input { flex: 1; background: #151515; border: 1px solid #333; color: white; padding: 12px 15px; border-radius: 25px; font-size: 16px; /* 16px предотвращает зум на iOS */ }
+        .send-btn { background: white; border: none; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; }
     </style>
 </head>
 <body>
@@ -158,7 +220,10 @@
 
         function loadVideo() {
             let val = document.getElementById('v-url').value;
-            if(val.includes('<iframe')) val = val.match(/src="([^"]+)"/)[1];
+            if(val.includes('<iframe')) {
+                let match = val.match(/src="([^"]+)"/);
+                if(match) val = match[1];
+            }
             ws.send(JSON.stringify({type:'load_video', url: val}));
             document.getElementById('remote-p').classList.remove('active');
         }
@@ -185,7 +250,7 @@
                 p.style.display = 'flex'; p.style.top = (e.clientY - 40) + 'px'; p.style.left = (e.clientX) + 'px';
             };
             b.appendChild(div);
-            b.scrollTop = b.scrollHeight;
+            b.scrollTop = b.scrollHeight; // Автопрокрутка вниз при новом сообщении
         }
 
         function react(emo) {

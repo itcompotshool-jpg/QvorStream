@@ -589,7 +589,20 @@ function connect(cb){
   };
 }
 
-function send(d){ if(ws&&ws.readyState===WebSocket.OPEN) ws.send(JSON.stringify(d)); }
+function send(d){ 
+  if(!ws){ console.error('WebSocket не инициализирован'); return; }
+  if(ws.readyState!==WebSocket.OPEN){ 
+    console.error('WebSocket не открыт, состояние:', ws.readyState); 
+    toast('Нет соединения с сервером','err');
+    return; 
+  }
+  try {
+    ws.send(JSON.stringify(d));
+    console.log('Отправлено на сервер:', d.type);
+  } catch(e) {
+    console.error('Ошибка при отправке:', e);
+  }
+}
 function dot(s){ const e=$('cdot'); if(!e) return; e.className='cdot'+(s==='ok'?' ok':s==='wait'?' wait':''); }
 
 // ═══ MESSAGE HANDLER ═══
@@ -643,11 +656,18 @@ function handle(d){
 
     case 'video_state':
       // Новый пользователь получает состояние видео от хоста
-      if(!isHost&&vidEl&&d.url){
-        vidEl.src=d.url;
-        if(d.t!=null) vidEl.currentTime=d.t;
-        if(d.playing===true) vidEl.play().catch(()=>{});
-        else if(d.playing===false) vidEl.pause();
+      console.log('Получено состояние видео:', d);
+      if(!isHost&&d.url){
+        console.log('Загружаю видео для гостя:', d.url);
+        loadVid(d.url);
+        // Синхронизируем время и состояние после загрузки
+        if(vidEl){
+          if(d.t!=null) vidEl.currentTime=d.t;
+          if(d.playing===true) vidEl.play().catch(()=>{});
+          else if(d.playing===false) vidEl.pause();
+        }
+      } else {
+        console.log('Не загружаю видео: isHost='+isHost+', hasUrl='+(!!d.url));
       }
       break;
 
@@ -864,6 +884,7 @@ function renderMsg(d){
   row.innerHTML=h;
   renderReacts(d.msgId);
   appendMsg(row);
+  console.log('Сообщение добавлено в чат:', d.sender, d.text);
   stats.msgs++; lss('qvs_s',stats);
 }
 
@@ -875,8 +896,10 @@ function appendMsg(el){
 function sendMsg(){
   const inp=$('msg-inp'), txt=inp.value.trim();
   if(!txt) return;
-  if(!wsOK){ toast('Нет соединения','err'); return; }
-  send({type:'chat',text:txt,ava:user.ava,sender:user.name,msgId:uid(),clientId:myId});
+  if(!wsOK){ toast('Нет соединения','err'); console.error('WebSocket не подключен'); return; }
+  const msgData = {type:'chat',text:txt,ava:user.ava,sender:user.name,msgId:uid(),clientId:myId};
+  console.log('Отправляю сообщение:', msgData);
+  send(msgData);
   inp.value='';
   $('eq-panel').classList.remove('open'); $('eq-btn').classList.remove('on');
 }

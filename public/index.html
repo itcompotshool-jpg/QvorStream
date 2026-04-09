@@ -626,6 +626,8 @@ function handle(d){
       sysMsg('→ '+d.name+' подключился');
       updViews(d.count);
       trkFriend(d.name);
+      // Если мы хост, отправляем ему состояние видео
+      if(isHost) sendVideoState();
       break;
 
     case 'user_left':
@@ -638,6 +640,16 @@ function handle(d){
 
     case 'set_video':
       loadVid(d.url); break;
+
+    case 'video_state':
+      // Новый пользователь получает состояние видео от хоста
+      if(!isHost&&vidEl&&d.url){
+        vidEl.src=d.url;
+        if(d.t!=null) vidEl.currentTime=d.t;
+        if(d.playing===true) vidEl.play().catch(()=>{});
+        else if(d.playing===false) vidEl.pause();
+      }
+      break;
 
     case 'play':
       if(!isHost&&vidEl){
@@ -785,6 +797,18 @@ function togglePlay(){
   if(vidEl.paused){ vidEl.play(); send({type:'play',t:vidEl.currentTime}); }
   else{ vidEl.pause(); send({type:'pause',t:vidEl.currentTime}); }
 }
+
+function sendVideoState(){
+  // Отправляет текущее состояние видео новому пользователю
+  if(!isHost||!vidEl) return;
+  send({
+    type:'video_state',
+    url:vidEl.src||'',
+    t:vidEl.currentTime,
+    playing:!vidEl.paused
+  });
+}
+
 function seek(d){ if(!isHost||!vidEl) return; vidEl.currentTime=Math.max(0,vidEl.currentTime+d); send({type:'seek',t:vidEl.currentTime}); }
 function toggleFS(){ const pw=$('pw'); if(document.fullscreenElement) document.exitFullscreen(); else pw.requestFullscreen().catch(()=>{}); }
 function setVol(v){ vol=parseFloat(v); if(vidEl){ vidEl.volume=vol; vidEl.muted=false; muted=false; } updVolSlider(); }
@@ -830,7 +854,8 @@ function renderMsg(d){
   let h='';
   if(!mine) h+='<img class="mava" src="'+ea(d.ava||'https://i.pravatar.cc/100')+'" onerror="this.src=\'https://i.pravatar.cc/100\'">';
   let bub='';
-  if(!mine) bub+='<div class="mname">'+esc(d.sender)+'</div>';
+  // Показываем имя отправителя для всех сообщений
+  if(d.sender) bub+='<div class="mname">'+esc(d.sender)+'</div>';
   if(d.text) bub+='<div class="mtext">'+esc(d.text)+'</div>';
   if(d.img)  bub+='<img class="mimg" src="'+ea(d.img)+'" onclick="viewImg(this.src)" alt="фото">';
   bub+='<div class="mreacts" id="mr-'+d.msgId+'"></div>';
@@ -851,7 +876,7 @@ function sendMsg(){
   const inp=$('msg-inp'), txt=inp.value.trim();
   if(!txt) return;
   if(!wsOK){ toast('Нет соединения','err'); return; }
-  send({type:'chat',text:txt,ava:user.ava,msgId:uid()});
+  send({type:'chat',text:txt,ava:user.ava,sender:user.name,msgId:uid(),clientId:myId});
   inp.value='';
   $('eq-panel').classList.remove('open'); $('eq-btn').classList.remove('on');
 }
@@ -861,7 +886,7 @@ function sendImg(input){
   if(f.size>4*1024*1024){ toast('Файл слишком большой (макс 4MB)','err'); return; }
   if(!wsOK){ toast('Нет соединения','err'); return; }
   const r=new FileReader();
-  r.onload=e=>send({type:'chat',text:'',img:e.target.result,ava:user.ava,msgId:uid()});
+  r.onload=e=>send({type:'chat',text:'',img:e.target.result,ava:user.ava,sender:user.name,msgId:uid(),clientId:myId});
   r.readAsDataURL(f);
 }
 function viewImg(src){ $('imgov-img').src=src; $('imgov').classList.add('on'); }

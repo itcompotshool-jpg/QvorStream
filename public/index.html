@@ -3,258 +3,196 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<title>QVORSTREAM - Glass Edition</title>
+<title>QVORSTREAM</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{
-  --red:#e8183a; --ra:rgba(232,24,58,.13); --rb:rgba(232,24,58,.35);
-  --bg:#09090c; --s1:#111116; --s2:#18181e; --s3:#20202a;
-  --bd:rgba(255,255,255,.1); --bd2:rgba(255,255,255,.15);
-  --tx:#f0f0f5; --tx2:#888898; --tx3:#4e4e62;
+:root {
+  --red:#e8183a; --bg:#09090c; --s1:#111116; --s2:#18181e; --tx:#f0f0f5; 
   --fn:'Nunito',sans-serif; --fd:'Bebas Neue',sans-serif;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;background:var(--bg);color:var(--tx);font-family:var(--fn);overflow:hidden;width:100%}
-button,input,textarea{font-family:var(--fn);border:none;outline:none;background:none}
+body{height:100vh;background:var(--bg);color:var(--tx);font-family:var(--fn);overflow:hidden;width:100%}
 
-/* --- ЭФФЕКТ ПОЛУСТЭКЛА (GLASSMORPHISM) --- */
+/* --- ЭФФЕКТ СТЕКЛА --- */
 .glass {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(10px) brightness(1.1);
-  -webkit-backdrop-filter: blur(10px) brightness(1.1); /* Для Safari */
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  background: rgba(255, 255, 255, 0.03) !important;
+  backdrop-filter: blur(20px) saturate(160%) brightness(1.2);
+  -webkit-backdrop-filter: blur(20px) saturate(160%) brightness(1.2);
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
 }
 
 /* Экраны */
-#s-menu{position:fixed;inset:0;z-index:500;display:flex;align-items:center;justify-content:center;padding:16px; background: var(--bg);}
-#s-app{position:fixed;inset:0;z-index:100;display:none;}
-#s-app.on{display:flex;}
+#s-menu { position:fixed; inset:0; z-index:500; display:flex; align-items:center; justify-content:center; background:var(--bg); padding:20px; }
+#s-app { position:fixed; inset:0; z-index:100; display:none; flex-direction:row; }
+#s-app.on { display:flex; }
 
 /* Меню */
-.menu-card{width:100%;max-width:400px;background:var(--s1);border:1px solid var(--bd2);border-radius:22px;padding:26px;display:flex;flex-direction:column;gap:18px;}
-.hero h1{font-family:var(--fd);font-size:2.4rem;letter-spacing:.1em;color: var(--tx);}
-.hero p{font-size:12px;color:var(--tx3);margin-top:3px;letter-spacing:.05em}
-.fl-inp{background:var(--s3);border:1px solid var(--bd2);border-radius:11px;color:var(--tx);padding:13px;font-size:14px;width:100%;}
-.btn-r{padding:13px;border-radius:11px;background:linear-gradient(135deg,#ff2a4a,#bf0f2d);color:#fff;font-size:13px;font-weight:800;cursor:pointer;text-align:center;width:100%;}
+.menu-card { width:100%; max-width:400px; background:var(--s1); border-radius:24px; padding:30px; border:1px solid rgba(255,255,255,0.05); text-align:center; }
+.hero h1 { font-family:var(--fd); font-size:3rem; letter-spacing:3px; margin-bottom:20px; }
+.fl-inp { background:var(--s2); border:1px solid rgba(255,255,255,0.1); border-radius:12px; color:#fff; padding:15px; width:100%; margin-bottom:10px; font-size:16px; }
+.btn-r { background:var(--red); color:#fff; padding:15px; border-radius:12px; font-weight:800; cursor:pointer; width:100%; border:none; transition:0.2s; }
+.btn-r:hover { opacity:0.9; }
 
-/* Layout Приложения */
-#s-app.on{flex-direction:row}
-.pcol{position:relative;flex:1;background:#000;display:flex;flex-direction:column;overflow:hidden;}
-.ccol{width:320px;flex-shrink:0;display:flex;flex-direction:column;background:var(--s1);border-left:1px solid var(--bd)}
+/* Приложение */
+.pcol { flex:1; position:relative; background:#000; }
+.ccol { width:340px; background: rgba(10,10,15,0.7); backdrop-filter: blur(30px); border-left: 1px solid rgba(255,255,255,0.05); display:flex; flex-direction:column; }
 
-/* Плеер */
-#pw{flex:1;position:relative;overflow:hidden}
-#vm{position:absolute;inset:0}
-#vm iframe,#vm video{width:100%;height:100%;border:none;display:block}
+#vm { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; }
+#vm iframe, #vm video { width:100%; height:100%; border:none; }
 
-/* Топ-панель (Стекло) */
-#ptop{position:absolute;top:10px;left:10px;right:10px;z-index:20;padding:8px 12px;display:flex;align-items:center;gap:8px;border-radius:16px; pointer-events:none;}
-#ptop > * { pointer-events: all; }
-.pp-pill{border-radius:20px;padding:5px 12px;font-size:11px;font-weight:700;color:#fff; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1);}
-.pp-host{background:rgba(232,24,58,0.3);border:1px solid var(--red);color:#fff;display:none}
-.pp-host.on{display:block}
-
-/* Ввод URL для хоста (Стекло) */
-.url-box{display:none;align-items:center;gap:5px;padding:4px;border-radius:12px;}
-.url-box input{font-size:11px;color:#fff;width:180px;padding:4px 8px;background: rgba(255,255,255,0.05); border-radius: 8px;}
-
-/* Чат (Полу стекло) */
-#ccnt{flex:1;display:flex;flex-direction:column;min-height:0;}
-#cmsg{flex:1;overflow-y:auto;padding:15px;display:flex;flex-direction:column;gap:10px;}
-.msg-item { background: rgba(255,255,255,0.03); padding: 8px 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); }
-
-/* Ввод сообщения (Стекло) */
-#cinp-row{display:flex;gap:8px;padding:12px;background:var(--s2);border-top:1px solid var(--bd)}
-#msg-inp{flex:1;background:var(--s3);border:1px solid var(--bd);border-radius:10px;padding:10px;color:var(--tx);font-size:13px;height:40px;resize:none;overflow:hidden;}
-
-#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:999;background:var(--s2);border:1px solid var(--bd2);border-radius:10px;padding:10px 16px;font-size:12px;opacity:0;transition:opacity 0.3s;}
-#toast.show{opacity:1}
-
-@media(max-width:700px){
-  #s-app.on{flex-direction:column}
-  .pcol{height:40%;flex:none}
-  .ccol{width:100%;flex:1; border-left: none; border-top: 1px solid var(--bd);}
+/* Панель управления */
+#ptop { 
+  position:absolute; top:20px; left:20px; right:20px; z-index:100; 
+  padding:10px; border-radius:18px; display:flex; align-items:center; gap:10px;
 }
+.pp-pill { background:rgba(0,0,0,0.5); padding:6px 15px; border-radius:20px; font-size:12px; font-weight:700; border:1px solid rgba(255,255,255,0.1); }
+#url-wrap { display:none; align-items:center; gap:8px; }
+#v-url { background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#fff; padding:6px 12px; border-radius:10px; width:220px; font-size:12px; }
+
+/* Чат */
+#cmsg { flex:1; overflow-y:auto; padding:20px; display:flex; flex-direction:column; gap:10px; }
+.msg { background:rgba(255,255,255,0.05); padding:10px; border-radius:12px; font-size:14px; border:1px solid rgba(255,255,255,0.03); }
+#cinp-row { margin:20px; padding:10px; border-radius:15px; display:flex; gap:10px; }
+#msg-inp { flex:1; color:#fff; font-size:14px; height:24px; resize:none; background:transparent; border:none; outline:none; }
+
+@media(max-width:700px){ #s-app.on{flex-direction:column} .pcol{height:40%} .ccol{width:100%;flex:1} }
 </style>
 </head>
 <body>
 
 <div id="s-menu">
-  <div class="menu-card">
-    <div class="hero"><h1>QVORSTREAM</h1><p>СОВМЕСТНЫЙ ПРОСМОТР</p></div>
-    <div class="fl">
-      <input class="fl-inp" id="mn" placeholder="Ваше имя..." maxlength="20">
-    </div>
-    <div id="menu-main">
-      <button class="btn-r" onclick="initRoom(true)" style="margin-bottom:10px">СОЗДАТЬ КОМНАТУ</button>
-      <div style="display:flex; gap:5px;">
-        <input class="fl-inp" id="jr-code" placeholder="Код..." maxlength="6" style="text-transform:uppercase; width: 100px;">
-        <button class="btn-r" onclick="initRoom(false)">ВОЙТИ</button>
-      </div>
+  <div class="menu-card glass">
+    <div class="hero"><h1>QVORSTREAM</h1></div>
+    <input class="fl-inp" id="mn" placeholder="Твоё имя..." maxlength="15">
+    <button class="btn-r" onclick="initRoom(true)">СОЗДАТЬ КОМНАТУ</button>
+    <div style="height:10px"></div>
+    <div style="display:flex; gap:10px;">
+      <input class="fl-inp" id="jr-code" placeholder="Код" style="margin:0; text-transform:uppercase;">
+      <button class="btn-r" style="width:120px" onclick="initRoom(false)">ВХОД</button>
     </div>
   </div>
 </div>
 
 <div id="s-app">
   <div class="pcol">
-    <div id="pw">
-      <div id="vm"></div>
-      
-      <div id="ptop" class="glass">
-        <div class="pp-pill">📍 <span id="room-code">...</span></div>
-        <div class="pp-pill pp-host" id="host-badge">🔴 ХОСТ</div>
-        
-        <div class="url-box glass" id="url-input-wrap">
-          <input type="text" id="v-url" placeholder="Ссылка VK или YouTube...">
-          <button onclick="changeVideo()" class="btn-r" style="padding:4px 12px; width: auto; font-size:10px">OK</button>
-        </div>
-        
-        <div style="flex:1"></div>
-        <div class="pp-pill">1 зритель</div>
+    <div id="vm">
+        <div style="color:var(--tx3); font-weight:700;">ОЖИДАНИЕ ВИДЕО...</div>
+    </div>
+    <div id="ptop" class="glass">
+      <div class="pp-pill">📍 <span id="room-id">...</span></div>
+      <div id="url-wrap">
+        <input type="text" id="v-url" placeholder="Ссылка на VK или YouTube">
+        <button onclick="changeVideo()" class="btn-r" style="padding:6px 15px; width:auto; font-size:11px;">OK</button>
       </div>
     </div>
   </div>
   
   <div class="ccol glass">
-    <div id="ccnt">
-      <div id="cmsg">
-        </div>
-      
-      <div id="cinp-row" class="glass">
-        <textarea id="msg-inp" placeholder="Сообщение..."></textarea>
-        <button onclick="sendMsg()" class="btn-r" style="width: auto; padding: 0 20px;">⏎</button>
-      </div>
+    <div id="cmsg"></div>
+    <div id="cinp-row" class="glass">
+      <textarea id="msg-inp" placeholder="Сообщение..."></textarea>
+      <button onclick="sendMsg()" class="btn-r" style="width:50px; padding:0;">⏎</button>
     </div>
   </div>
 </div>
 
-<div id="toast"></div>
-
 <script>
-let user = { name: 'Аноним' };
-let curCode = '', isHost = false, wsOK = false;
+let curCode = '', isHost = false, wsOK = false, myName = '';
+const WS_URL = location.origin.replace(/^http/, 'ws').replace('3000', '8080'); // Авто-подстройка под порт
 
-// АДРЕС ТВOЕГО СЕРВЕРА (localhost для теста)
-const WS_URL = 'ws://localhost:8080'; 
-
-function $(id) { return document.getElementById(id); }
-function toast(m) { $('toast').textContent = m; $('toast').classList.add('show'); setTimeout(()=>$('toast').classList.remove('show'), 3000); }
+const $ = id => document.getElementById(id);
 
 function initRoom(host) {
-  const nm = $('mn').value.trim();
-  if(!nm) return toast('Введите имя');
-  user.name = nm;
-  isHost = host;
+  const n = $('mn').value.trim();
+  if(!n) return alert('Введи имя');
+  myName = n; isHost = host;
   curCode = host ? Math.random().toString(36).substr(2,6).toUpperCase() : $('jr-code').value.toUpperCase();
   
-  if(!host && curCode.length < 6) return toast('Введите код');
-
-  $('s-menu').style.display = 'none';
+  if(!host && !curCode) return alert('Введи код');
+  
+  $('s-menu').style.display='none';
   $('s-app').classList.add('on');
-  $('room-code').textContent = curCode;
+  $('room-id').textContent = curCode;
+  if(isHost) $('url-wrap').style.display = 'flex';
   
-  if(isHost) {
-      $('host-badge').classList.add('on');
-      $('url-input-wrap').style.display = 'flex';
-  }
-  
-  connectWS();
+  connect();
 }
 
-// ЛОГИКА WEBSOCKET
-function connectWS() {
+function connect() {
   const ws = new WebSocket(WS_URL);
   
-  ws.onopen = () => { 
-      wsOK = true; 
-      // Шаг 1: Авторизуемся на сервере
-      send({type:'join', code:curCode, name:user.name}); 
-      toast('Подключено к серверу');
+  ws.onopen = () => {
+    wsOK = true;
+    send({type:'join', code:curCode, name:myName, isHost});
+    // Если гость — просим у сервера актуальное видео
+    if(!isHost) send({type:'request-video', code:curCode});
   };
-  
+
   ws.onmessage = e => {
-    const msg = JSON.parse(e.data);
+    const m = JSON.parse(e.data);
+    if(m.type === 'chat') addChat(m.name, m.text);
+    if(m.type === 'video') loadVideo(m.url);
     
-    // Шаг 2: Обрабатываем входящие сообщения от сервера
-    if(msg.type === 'chat') {
-        addChat(msg.name, msg.text);
-    }
-    if(msg.type === 'video') {
-        loadVideo(msg.url);
+    // Ответ хоста на запрос видео от гостя
+    if(m.type === 'request-video' && isHost) {
+      const currentUrl = $('v-url').value;
+      if(currentUrl) send({type:'video', url:currentUrl, code:curCode});
     }
   };
-  
-  ws.onerror = () => toast('Ошибка сервера. Запусти server.js!');
-  ws.onclose = () => { wsOK = false; toast('Потеряно соединение'); };
-  
-  window._ws = ws; // Сохраняем глобально для отправки
+
+  ws.onclose = () => { wsOK = false; setTimeout(connect, 2000); };
+  window._ws = ws;
 }
 
-function send(obj) { if(wsOK) window._ws.send(JSON.stringify(obj)); }
+function send(o) { if(wsOK) window._ws.send(JSON.stringify(o)); }
 
-// УПРАВЛЕНИЕ ВИДЕО
 function changeVideo() {
-  const url = $('v-url').value.trim();
-  if(url && isHost) {
-    // Отправляем всем, включая себя (сервер перешлет)
-    send({type:'video', url: url});
+  const u = $('v-url').value.trim();
+  if(u) {
+    send({type:'video', url:u, code:curCode});
+    loadVideo(u);
   }
 }
 
-function loadVideo(url) {
+function loadVideo(u) {
   const vm = $('vm');
-  vm.innerHTML = ''; // Очищаем плеер
-  
-  // YouTube
-  if (url.includes('youtube.com') || url.includes('youtu.be')) {
-    let vid = url.match(/(?:v=|be\/|embed\/)([^&?\s]+)/)?.[1];
-    if(vid) vm.innerHTML = `<iframe src="https://www.youtube.com/embed/${vid}?autoplay=1" allow="autoplay;fullscreen"></iframe>`;
+  if(!u) return;
+
+  if(u.includes('youtube.com') || u.includes('youtu.be')) {
+    let id = u.match(/(?:v=|be\/|embed\/)([^&?\s]+)/)?.[1];
+    vm.innerHTML = `<iframe src="https://www.youtube.com/embed/${id}?autoplay=1" allow="autoplay;fullscreen"></iframe>`;
   } 
-  // VK Video
-  else if (url.includes('vk.com/video') || url.includes('vkvideo.ru')) {
-    let match = url.match(/video(-?[0-9]+_[0-9]+)/);
-    if (match) {
-      let parts = match[1].split('_');
-      vm.innerHTML = `<iframe src="https://vk.com/video_ext.php?oid=${parts[0]}&id=${parts[1]}&hash=0" allow="autoplay;fullscreen"></iframe>`;
+  else if(u.includes('vk.com/video') || u.includes('vkvideo.ru')) {
+    let m = u.match(/video(-?[0-9]+_[0-9]+)/);
+    if(m) {
+      let p = m[1].split('_');
+      vm.innerHTML = `<iframe src="https://vk.com/video_ext.php?oid=${p[0]}&id=${p[1]}&hash=0" allow="autoplay;fullscreen"></iframe>`;
     }
   } 
-  // Прямая ссылка MP4
-  else if (url.endsWith('.mp4')) {
-    vm.innerHTML = `<video controls autoplay style="width:100%; height:100%"><source src="${url}" type="video/mp4"></video>`;
-  } else {
-      toast('Неподдерживаемая ссылка');
+  else {
+    vm.innerHTML = `<video controls autoplay style="width:100%;height:100%"><source src="${u}" type="video/mp4"></video>`;
   }
 }
 
-// ЛОГИКА ЧАТА
 function sendMsg() {
   const t = $('msg-inp').value.trim();
-  if(t && wsOK) { 
-      // Отправляем сообщение на сервер
-      send({type:'chat', text:t, name:user.name}); 
-      $('msg-inp').value = ''; // Очищаем ввод
+  if(t) {
+    send({type:'chat', text:t, name:myName, code:curCode});
+    $('msg-inp').value = '';
   }
 }
 
 function addChat(n, t) {
   const d = document.createElement('div');
-  d.className = 'msg-item';
-  // Подсвечиваем свои сообщения
-  const nameColor = (n === user.name) ? 'var(--green)' : 'var(--red)';
-  d.innerHTML = `<b style="font-size:12px; color:${nameColor}">${n}:</b> <span style="font-size:13px; color:var(--tx)">${t}</span>`;
+  d.className = 'msg';
+  d.innerHTML = `<b style="color:var(--red)">${n}:</b> <span>${t}</span>`;
   $('cmsg').appendChild(d);
-  // Авто-скролл вниз
   $('cmsg').scrollTop = $('cmsg').scrollHeight;
 }
 
 // Отправка по Enter
-$('msg-inp').addEventListener('keypress', function (e) {
-    if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        sendMsg();
-    }
-});
+$('msg-inp').onkeydown = e => { if(e.key==='Enter' && !e.shiftKey) { e.preventDefault(); sendMsg(); } };
 </script>
+
 </body>
 </html>

@@ -6,56 +6,61 @@
 <title>QVORSTREAM</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root {
-  --red:#e8183a; --bg:#09090c; --s1:#111116; --s2:#18181e; --tx:#f0f0f5; 
+:root{
+  --red:#e8183a; --ra:rgba(232,24,58,.13); --rb:rgba(232,24,58,.35);
+  --bg:#09090c; --s1:#111116; --s2:#18181e; --s3:#20202a;
+  --bd:rgba(255,255,255,.07); --bd2:rgba(255,255,255,.12);
+  --tx:#f0f0f5; --tx2:#888898; --tx3:#4e4e62;
+  --green:#22c55e;
   --fn:'Nunito',sans-serif; --fd:'Bebas Neue',sans-serif;
+  --safe-b: env(safe-area-inset-bottom, 0px);
+  --safe-t: env(safe-area-inset-top, 0px);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-body{height:100vh;background:var(--bg);color:var(--tx);font-family:var(--fn);overflow:hidden;width:100%}
+html,body{height:100%;height:100dvh;background:var(--bg);color:var(--tx);font-family:var(--fn);overflow:hidden;position:fixed;width:100%}
 
-/* --- ЭФФЕКТ СТЕКЛА --- */
-.glass {
-  background: rgba(255, 255, 255, 0.03) !important;
-  backdrop-filter: blur(20px) saturate(160%) brightness(1.2);
-  -webkit-backdrop-filter: blur(20px) saturate(160%) brightness(1.2);
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+/* ЭФФЕКТ ГЛУБОКОГО СТЕКЛА */
+.glass{
+  background:rgba(24,24,30,0.6) !important;
+  backdrop-filter:blur(25px) brightness(1.2) saturate(160%);
+  -webkit-backdrop-filter:blur(25px) brightness(1.2) saturate(160%);
+  border:1px solid rgba(255,255,255,0.1) !important;
+  box-shadow:0 8px 32px rgba(0,0,0,.4);
 }
 
-/* Экраны */
-#s-menu { position:fixed; inset:0; z-index:500; display:flex; align-items:center; justify-content:center; background:var(--bg); padding:20px; }
-#s-app { position:fixed; inset:0; z-index:100; display:none; flex-direction:row; }
-#s-app.on { display:flex; }
+#s-menu{position:fixed;inset:0;z-index:500;display:flex;align-items:center;justify-content:center;padding:16px}
+#s-app{position:fixed;inset:0;z-index:100;display:none;flex-direction:row}
+#s-app.on{display:flex}
 
-/* Меню */
-.menu-card { width:100%; max-width:400px; background:var(--s1); border-radius:24px; padding:30px; border:1px solid rgba(255,255,255,0.05); text-align:center; }
-.hero h1 { font-family:var(--fd); font-size:3rem; letter-spacing:3px; margin-bottom:20px; }
-.fl-inp { background:var(--s2); border:1px solid rgba(255,255,255,0.1); border-radius:12px; color:#fff; padding:15px; width:100%; margin-bottom:10px; font-size:16px; }
-.btn-r { background:var(--red); color:#fff; padding:15px; border-radius:12px; font-weight:800; cursor:pointer; width:100%; border:none; transition:0.2s; }
-.btn-r:hover { opacity:0.9; }
-
-/* Приложение */
-.pcol { flex:1; position:relative; background:#000; }
-.ccol { width:340px; background: rgba(10,10,15,0.7); backdrop-filter: blur(30px); border-left: 1px solid rgba(255,255,255,0.05); display:flex; flex-direction:column; }
-
-#vm { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; }
-#vm iframe, #vm video { width:100%; height:100%; border:none; }
-
-/* Панель управления */
-#ptop { 
-  position:absolute; top:20px; left:20px; right:20px; z-index:100; 
-  padding:10px; border-radius:18px; display:flex; align-items:center; gap:10px;
+.menu-card{
+  width:100%;max-width:400px;
+  background:linear-gradient(160deg,var(--s2),var(--s1));
+  border:1px solid var(--bd2);border-radius:22px;
+  padding:26px;display:flex;flex-direction:column;gap:18px;
 }
-.pp-pill { background:rgba(0,0,0,0.5); padding:6px 15px; border-radius:20px; font-size:12px; font-weight:700; border:1px solid rgba(255,255,255,0.1); }
-#url-wrap { display:none; align-items:center; gap:8px; }
-#v-url { background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#fff; padding:6px 12px; border-radius:10px; width:220px; font-size:12px; }
+.hero h1{font-family:var(--fd);font-size:2.5rem;letter-spacing:.1em;text-align:center}
+.fl-inp{background:var(--s3);border:1.5px solid var(--bd2);border-radius:11px;color:var(--tx);padding:12px;font-size:14px;width:100%}
+.btn-r{padding:13px;border-radius:11px;background:linear-gradient(135deg,#ff2a4a,#bf0f2d);color:#fff;font-size:13px;font-weight:800;cursor:pointer;border:none;width:100%}
 
-/* Чат */
-#cmsg { flex:1; overflow-y:auto; padding:20px; display:flex; flex-direction:column; gap:10px; }
-.msg { background:rgba(255,255,255,0.05); padding:10px; border-radius:12px; font-size:14px; border:1px solid rgba(255,255,255,0.03); }
-#cinp-row { margin:20px; padding:10px; border-radius:15px; display:flex; gap:10px; }
-#msg-inp { flex:1; color:#fff; font-size:14px; height:24px; resize:none; background:transparent; border:none; outline:none; }
+.pcol{position:relative;flex:1;background:#000;display:flex;flex-direction:column;min-width:0}
+.ccol{width:320px;display:flex;flex-direction:column;border-left:1px solid var(--bd)}
 
-@media(max-width:700px){ #s-app.on{flex-direction:column} .pcol{height:40%} .ccol{width:100%;flex:1} }
+#vm{position:absolute;inset:0}
+#vm iframe,#vm video{width:100%;height:100%;border:none;display:block}
+
+#ptop{position:absolute;top:15px;left:15px;right:15px;z-index:20;padding:10px;display:flex;align-items:center;gap:10px;pointer-events:none}
+#ptop>*{pointer-events:all}
+.pp-pill{background:rgba(0,0,0,0.6);padding:6px 12px;border-radius:20px;font-size:11px;font-weight:700;border:1px solid var(--bd2)}
+
+#url-bar{display:none;align-items:center;gap:8px;padding:4px;border-radius:12px}
+#v-url{background:rgba(0,0,0,0.3);border:1px solid var(--bd2);color:#fff;padding:6px 10px;border-radius:8px;font-size:12px;width:200px}
+
+#cmsg{flex:1;overflow-y:auto;padding:15px;display:flex;flex-direction:column;gap:8px}
+.msg{background:rgba(255,255,255,0.05);padding:10px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
+#cinp-row{margin:15px;padding:10px;border-radius:15px;display:flex;gap:8px}
+#msg-inp{flex:1;color:#fff;background:transparent;border:none;outline:none;resize:none;font-size:13px}
+
+@media(max-width:700px){#s-app.on{flex-direction:column}.pcol{height:40%}.ccol{width:100%;flex:1}}
 </style>
 </head>
 <body>
@@ -65,40 +70,38 @@ body{height:100vh;background:var(--bg);color:var(--tx);font-family:var(--fn);ove
     <div class="hero"><h1>QVORSTREAM</h1></div>
     <input class="fl-inp" id="mn" placeholder="Твоё имя..." maxlength="15">
     <button class="btn-r" onclick="initRoom(true)">СОЗДАТЬ КОМНАТУ</button>
-    <div style="height:10px"></div>
     <div style="display:flex; gap:10px;">
-      <input class="fl-inp" id="jr-code" placeholder="Код" style="margin:0; text-transform:uppercase;">
-      <button class="btn-r" style="width:120px" onclick="initRoom(false)">ВХОД</button>
+        <input class="fl-inp" id="jr-code" placeholder="Код" style="text-transform:uppercase">
+        <button class="btn-r" style="width:120px" onclick="initRoom(false)">ВХОД</button>
     </div>
   </div>
 </div>
 
 <div id="s-app">
   <div class="pcol">
-    <div id="vm">
-        <div style="color:var(--tx3); font-weight:700;">ОЖИДАНИЕ ВИДЕО...</div>
-    </div>
+    <div id="vm"><div style="display:flex;height:100%;align-items:center;justify-content:center;color:var(--tx3)">ОЖИДАНИЕ ХОСТА...</div></div>
     <div id="ptop" class="glass">
-      <div class="pp-pill">📍 <span id="room-id">...</span></div>
-      <div id="url-wrap">
-        <input type="text" id="v-url" placeholder="Ссылка на VK или YouTube">
-        <button onclick="changeVideo()" class="btn-r" style="padding:6px 15px; width:auto; font-size:11px;">OK</button>
+      <div class="pp-pill">📍 <span id="room-code">...</span></div>
+      <div id="url-bar">
+        <input type="text" id="v-url" placeholder="Ссылка (VK, YT, MP4)">
+        <button onclick="changeVideo()" class="btn-r" style="width:auto;padding:6px 12px">OK</button>
       </div>
+      <div style="flex:1"></div>
+      <div class="pp-pill" id="v-count">1 зритель</div>
     </div>
   </div>
-  
   <div class="ccol glass">
     <div id="cmsg"></div>
     <div id="cinp-row" class="glass">
       <textarea id="msg-inp" placeholder="Сообщение..."></textarea>
-      <button onclick="sendMsg()" class="btn-r" style="width:50px; padding:0;">⏎</button>
+      <button onclick="sendMsg()" class="btn-r" style="width:40px;padding:0">⏎</button>
     </div>
   </div>
 </div>
 
 <script>
-let curCode = '', isHost = false, wsOK = false, myName = '';
-const WS_URL = location.origin.replace(/^http/, 'ws').replace('3000', '8080'); // Авто-подстройка под порт
+let curCode='', isHost=false, wsOK=false, myName='', lastUrl='';
+const WS_URL = location.origin.replace(/^http/, 'ws') || 'ws://localhost:8080';
 
 const $ = id => document.getElementById(id);
 
@@ -108,39 +111,35 @@ function initRoom(host) {
   myName = n; isHost = host;
   curCode = host ? Math.random().toString(36).substr(2,6).toUpperCase() : $('jr-code').value.toUpperCase();
   
-  if(!host && !curCode) return alert('Введи код');
+  if(!host && !curCode) return alert('Нужен код');
   
   $('s-menu').style.display='none';
   $('s-app').classList.add('on');
-  $('room-id').textContent = curCode;
-  if(isHost) $('url-wrap').style.display = 'flex';
+  $('room-code').textContent = curCode;
+  if(isHost) $('url-bar').style.display = 'flex';
   
   connect();
 }
 
 function connect() {
   const ws = new WebSocket(WS_URL);
-  
   ws.onopen = () => {
     wsOK = true;
     send({type:'join', code:curCode, name:myName, isHost});
-    // Если гость — просим у сервера актуальное видео
-    if(!isHost) send({type:'request-video', code:curCode});
+    // Если гость — просим данные у хоста
+    if(!isHost) send({type:'request-sync', code:curCode});
   };
-
   ws.onmessage = e => {
     const m = JSON.parse(e.data);
     if(m.type === 'chat') addChat(m.name, m.text);
     if(m.type === 'video') loadVideo(m.url);
     
-    // Ответ хоста на запрос видео от гостя
-    if(m.type === 'request-video' && isHost) {
-      const currentUrl = $('v-url').value;
-      if(currentUrl) send({type:'video', url:currentUrl, code:curCode});
+    // ЛОГИКА СИНХРОНИЗАЦИИ
+    if(m.type === 'request-sync' && isHost && lastUrl) {
+      send({type:'video', url:lastUrl, code:curCode});
     }
   };
-
-  ws.onclose = () => { wsOK = false; setTimeout(connect, 2000); };
+  ws.onclose = () => { wsOK=false; setTimeout(connect, 2000); };
   window._ws = ws;
 }
 
@@ -148,15 +147,13 @@ function send(o) { if(wsOK) window._ws.send(JSON.stringify(o)); }
 
 function changeVideo() {
   const u = $('v-url').value.trim();
-  if(u) {
-    send({type:'video', url:u, code:curCode});
-    loadVideo(u);
-  }
+  if(u) { lastUrl = u; send({type:'video', url:u, code:curCode}); loadVideo(u); }
 }
 
 function loadVideo(u) {
   const vm = $('vm');
   if(!u) return;
+  lastUrl = u; // Запоминаем для новых гостей
 
   if(u.includes('youtube.com') || u.includes('youtu.be')) {
     let id = u.match(/(?:v=|be\/|embed\/)([^&?\s]+)/)?.[1];
@@ -176,23 +173,18 @@ function loadVideo(u) {
 
 function sendMsg() {
   const t = $('msg-inp').value.trim();
-  if(t) {
-    send({type:'chat', text:t, name:myName, code:curCode});
-    $('msg-inp').value = '';
-  }
+  if(t) { send({type:'chat', text:t, name:myName, code:curCode}); $('msg-inp').value=''; }
 }
 
 function addChat(n, t) {
   const d = document.createElement('div');
   d.className = 'msg';
-  d.innerHTML = `<b style="color:var(--red)">${n}:</b> <span>${t}</span>`;
+  d.innerHTML = `<b style="color:var(--red);font-size:12px">${n}:</b> <span style="font-size:13px">${t}</span>`;
   $('cmsg').appendChild(d);
   $('cmsg').scrollTop = $('cmsg').scrollHeight;
 }
 
-// Отправка по Enter
 $('msg-inp').onkeydown = e => { if(e.key==='Enter' && !e.shiftKey) { e.preventDefault(); sendMsg(); } };
 </script>
-
 </body>
 </html>

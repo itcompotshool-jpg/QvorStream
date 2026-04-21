@@ -17,90 +17,157 @@
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        /* Исправление высоты для мобилок */
         body, html { 
-            margin: 0; padding: 0; height: 100vh; background: var(--bg); 
-            color: #fff; font-family: 'SF Pro Display', sans-serif; overflow: hidden; 
+            margin: 0; padding: 0; 
+            height: 100vh; height: 100dvh; 
+            background: var(--bg); 
+            color: #fff; font-family: 'SF Pro Display', sans-serif; 
+            overflow: hidden; 
+            position: fixed; width: 100%;
         }
 
         /* МЕНЮ ВХОДА */
         #screen-menu {
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            height: 100vh; background: radial-gradient(circle at 50% 50%, #1c1c1e 0%, #000 100%);
+            height: 100%; background: radial-gradient(circle at 50% 50%, #1c1c1e 0%, #000 100%);
         }
         .auth-card {
             background: var(--card); backdrop-filter: blur(50px); border: 1px solid var(--border);
-            padding: 40px; border-radius: 40px; width: 380px; box-shadow: 0 50px 100px rgba(0,0,0,0.8);
+            padding: 30px; border-radius: 32px; width: 90%; max-width: 380px;
             display: flex; flex-direction: column; gap: 15px;
         }
 
         input {
             background: rgba(255,255,255,0.08); border: 1px solid var(--border);
-            padding: 18px; border-radius: 20px; color: #fff; font-size: 16px; outline: none; transition: 0.3s;
+            padding: 16px; border-radius: 18px; color: #fff; font-size: 16px; outline: none; transition: 0.3s;
         }
         input:focus { border-color: var(--accent); background: rgba(255,255,255,0.12); }
         
         .btn {
-            background: var(--accent); color: #fff; border: none; padding: 18px;
-            border-radius: 20px; font-weight: 600; font-size: 16px; cursor: pointer; transition: 0.2s;
+            background: var(--accent); color: #fff; border: none; padding: 16px;
+            border-radius: 18px; font-weight: 600; font-size: 16px; cursor: pointer; transition: 0.2s;
             display: flex; align-items: center; justify-content: center; gap: 10px;
         }
         .btn:active { transform: scale(0.96); }
 
         /* ПРИЛОЖЕНИЕ */
-        #screen-app { display: none; height: 100vh; flex-direction: column; }
+        #screen-app { 
+            display: none; 
+            height: 100%; 
+            flex-direction: column; 
+        }
         #screen-app.active { display: flex; }
 
-        /* СКРЫВАЕМАЯ ПАНЕЛЬ */
+        /* НАВИГАЦИЯ */
         .header-nav {
-            padding: 12px 20px; background: rgba(0,0,0,0.8); backdrop-filter: blur(20px);
-            display: flex; align-items: center; gap: 15px; border-bottom: 1px solid var(--border);
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 10px 15px; 
+            padding-top: max(10px, env(safe-area-inset-top));
+            background: rgba(0,0,0,0.8); backdrop-filter: blur(20px);
+            display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border);
+            transition: all 0.4s ease;
+            flex-shrink: 0;
         }
-        .header-nav.hidden { transform: translateY(-100%); height: 0; padding: 0; border: none; overflow: hidden; }
+        .header-nav.hidden { margin-top: -100px; opacity: 0; pointer-events: none; }
 
         .url-box { flex: 1; position: relative; display: flex; align-items: center; }
-        .url-box input { width: 100%; padding: 10px 45px 10px 15px; border-radius: 14px; font-size: 14px; }
-        .btn-action { background: none; border: none; color: #fff; cursor: pointer; opacity: 0.6; transition: 0.3s; }
-        .btn-action:hover { opacity: 1; color: var(--accent); }
+        .url-box input { width: 100%; padding: 10px 40px 10px 12px; border-radius: 12px; font-size: 14px; }
 
-        /* ПАНЕЛЬ УПРАВЛЕНИЯ (SIDEBAR) */
+        /* БОКОВАЯ ПАНЕЛЬ */
         #sidebar {
-            position: fixed; left: -320px; top: 0; width: 320px; height: 100%;
+            position: fixed; left: -100%; top: 0; width: 100%; max-width: 300px; height: 100%;
             background: rgba(15, 15, 17, 0.98); backdrop-filter: blur(40px);
-            z-index: 1000; transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            border-right: 1px solid var(--border); padding: 40px 25px;
+            z-index: 2000; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border-right: 1px solid var(--border); padding: 25px;
         }
         #sidebar.open { left: 0; }
 
-        .user-list { margin-top: 20px; display: flex; flex-direction: column; gap: 10px; }
-        .user-tag { background: var(--glass); padding: 12px; border-radius: 15px; font-size: 14px; display: flex; align-items: center; gap: 10px; }
+        /* ГЛАВНАЯ СЕТКА */
+        .main-grid { 
+            display: flex; 
+            flex: 1; 
+            overflow: hidden; 
+            padding: 10px; 
+            gap: 10px; 
+        }
 
-        /* ГЛАВНЫЙ КОНТЕНТ */
-        .main-grid { display: flex; flex: 1; overflow: hidden; padding: 15px; gap: 15px; }
-        #player { flex: 3; background: #000; border-radius: 30px; border: 1px solid var(--border); overflow: hidden; position: relative; }
+        #player { 
+            flex: 3; 
+            background: #000; 
+            border-radius: 20px; 
+            border: 1px solid var(--border); 
+            overflow: hidden; 
+            position: relative; 
+        }
         iframe { width: 100%; height: 100%; border: none; }
 
-        /* Кнопка "Глаз" (скрыть/показать) */
-        .visibility-toggle {
-            position: fixed; top: 20px; right: 20px; z-index: 1001;
-            width: 40px; height: 40px; background: var(--accent); border-radius: 50%;
-            display: flex; align-items: center; justify-content: center; cursor: pointer;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-        }
-
         /* ЧАТ */
-        .chat-side { flex: 1; background: var(--card); backdrop-filter: blur(30px); border-radius: 30px; border: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden; }
-        #chat-scroll { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
-        .bubble { background: var(--glass); padding: 12px 16px; border-radius: 20px; max-width: 85%; align-self: flex-start; cursor: pointer; position: relative; transition: 0.2s; }
-        .bubble.me { background: var(--accent); align-self: flex-end; }
-        .bubble:hover .reacts { display: flex; }
-        .reacts { position: absolute; top: -30px; right: 0; background: #1c1c1e; padding: 4px 8px; border-radius: 15px; display: none; gap: 8px; border: 1px solid var(--border); }
-
-        @media (max-width: 850px) {
-            .main-grid { flex-direction: column; padding: 10px; }
-            #player { flex: none; height: 35vh; }
-            .auth-card { width: 90%; }
+        .chat-side { 
+            flex: 1.2; 
+            background: var(--card); 
+            backdrop-filter: blur(30px); 
+            border-radius: 20px; 
+            border: 1px solid var(--border); 
+            display: flex; 
+            flex-direction: column; 
+            overflow: hidden; 
         }
+        #chat-scroll { 
+            flex: 1; 
+            overflow-y: auto; 
+            padding: 15px; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 10px; 
+        }
+        .bubble { 
+            background: var(--glass); 
+            padding: 10px 14px; 
+            border-radius: 18px; 
+            max-width: 85%; 
+            word-wrap: break-word;
+            font-size: 14px;
+        }
+        .bubble.me { background: var(--accent); align-self: flex-end; }
+
+        /* Ввод чата */
+        .chat-input-area {
+            padding: 10px;
+            padding-bottom: max(10px, env(safe-area-inset-bottom));
+            background: rgba(255,255,255,0.03);
+            display: flex;
+            gap: 8px;
+            border-top: 1px solid var(--border);
+        }
+
+        /* Кнопка глаза */
+        .visibility-toggle {
+            position: fixed; bottom: 30px; right: 20px; z-index: 1001;
+            width: 50px; height: 50px; background: var(--accent); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; cursor: pointer;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+        }
+
+        /* МОБИЛЬНАЯ АДАПТАЦИЯ */
+        @media (max-width: 850px) {
+            .main-grid { 
+                flex-direction: column; 
+                padding: 5px;
+            }
+            #player { 
+                flex: none; 
+                height: 30%; /* Плеер занимает 30% высоты */
+                min-height: 200px;
+            }
+            .chat-side {
+                flex: 1; /* Чат занимает все остальное пространство */
+            }
+            .header-nav.hidden { margin-top: -120px; } /* Полное скрытие на мобилках */
+            .visibility-toggle { bottom: 20px; right: 20px; width: 45px; height: 45px; }
+        }
+
+        .btn-action { background: none; border: none; color: #fff; cursor: pointer; opacity: 0.7; }
     </style>
 </head>
 <body>
@@ -112,37 +179,23 @@
             <h2 style="margin:0;">Комната</h2>
             <button onclick="toggleSidebar()" class="btn-action"><i data-lucide="x"></i></button>
         </div>
-        <div style="margin-top:30px;">
-            <p style="font-size:11px; opacity:0.5; text-transform:uppercase;">Пригласить друзей</p>
-            
-            <div style="border: 1px dashed var(--accent); padding: 12px; border-radius: 15px; background: var(--glass); text-align: center; font-size: 18px; font-weight: bold; color: var(--accent); margin-bottom: 15px;">
-                Код: <span id="room-id-val-display">----</span>
-            </div>
-
-            <div class="user-tag" style="justify-content:space-between; border: 1px dashed var(--accent);">
-                <span id="room-id-val">----</span>
-                <button onclick="copyInviteLink()" class="btn-action" title="Копировать ссылку"><i data-lucide="link" style="width:18px;"></i></button>
-            </div>
+        <div style="margin-top:20px;">
+            <div id="room-id-val-display" style="border: 1px dashed var(--accent); padding: 12px; border-radius: 15px; background: var(--glass); text-align: center; font-size: 18px; font-weight: bold; color: var(--accent); margin-bottom: 15px;">----</div>
+            <button onclick="copyInviteLink()" class="btn" style="width:100%; font-size:14px;"><i data-lucide="link"></i> Ссылка</button>
         </div>
-        <div style="margin-top:30px;">
+        <div style="margin-top:25px;">
             <p style="font-size:11px; opacity:0.5; text-transform:uppercase;">В сети</p>
-            <div id="users-box" class="user-list">
-                </div>
+            <div id="users-box" class="user-list"></div>
         </div>
     </div>
 
     <div id="screen-menu">
         <div class="auth-card">
-            <h1 style="text-align:center; margin:0; font-size:32px;">QuorStream</h1>
-            <p style="text-align:center; opacity:0.4; margin-top:-5px; font-size:14px;">Joint Viewing Premium</p>
+            <h1 style="text-align:center; margin:0; font-size:28px;">QuorStream</h1>
             <input type="text" id="name-in" placeholder="Ваше имя">
-            <input type="text" id="code-in" placeholder="Код комнаты">
+            <input type="text" id="code-in" placeholder="Код комнаты (если есть)">
             <button class="btn" onclick="connect('create')"><i data-lucide="plus"></i> Создать</button>
             <button class="btn" style="background:#2c2c2e;" onclick="connect('join')"><i data-lucide="log-in"></i> Войти</button>
-            <div style="display:flex; justify-content:center; gap:20px; margin-top:10px;">
-                <a href="https://t.me/QuorvoxTeam" target="_blank" style="color:rgba(255,255,255,0.3);"><i data-lucide="send"></i></a>
-                <a href="#" style="color:rgba(255,255,255,0.3);"><i data-lucide="settings"></i></a>
-            </div>
         </div>
     </div>
 
@@ -150,10 +203,10 @@
         <div class="header-nav" id="main-nav">
             <button class="btn-action" onclick="toggleSidebar()"><i data-lucide="menu"></i></button>
             <div class="url-box">
-                <input type="text" id="url-input" placeholder="YouTube или VK ссылка...">
-                <button class="reload-btn" onclick="setVideo()" style="position:absolute; right:12px; background:none; border:none; color:var(--accent); cursor:pointer;"><i data-lucide="play-circle"></i></button>
+                <input type="text" id="url-input" placeholder="YouTube или VK...">
+                <button onclick="setVideo()" style="position:absolute; right:10px; background:none; border:none; color:var(--accent);"><i data-lucide="play-circle"></i></button>
             </div>
-            <button class="btn-action" onclick="location.reload()" style="color:#ff3b30;"><i data-lucide="log-out"></i></button>
+            <button class="btn-action" onclick="location.reload()" style="color:var(--danger);"><i data-lucide="log-out"></i></button>
         </div>
 
         <div class="main-grid">
@@ -162,9 +215,9 @@
             </div>
             <div class="chat-side">
                 <div id="chat-scroll"></div>
-                <div style="padding:15px; display:flex; gap:10px; background:rgba(0,0,0,0.2);">
-                    <input type="text" id="chat-msg" style="flex:1; padding:12px; border-radius:15px;" placeholder="Текст...">
-                    <button class="btn" onclick="sendChat()" style="padding:10px 20px;"><i data-lucide="send" style="width:18px;"></i></button>
+                <div class="chat-input-area">
+                    <input type="text" id="chat-msg" style="flex:1; padding:12px; border-radius:12px;" placeholder="Сообщение...">
+                    <button class="btn" onclick="sendChat()" style="padding:10px 15px;"><i data-lucide="send" style="width:18px;"></i></button>
                 </div>
             </div>
         </div>
@@ -178,9 +231,7 @@
         
         function toggleNav() {
             const nav = document.getElementById('main-nav');
-            const eye = document.querySelector('[data-lucide="eye"], [data-lucide="eye-off"]');
             nav.classList.toggle('hidden');
-            // Переключаем иконку глаза
             const isHidden = nav.classList.contains('hidden');
             document.getElementById('vis-btn').innerHTML = isHidden ? '<i data-lucide="eye-off"></i>' : '<i data-lucide="eye"></i>';
             lucide.createIcons();
@@ -189,7 +240,7 @@
         function copyInviteLink() {
             const link = `${window.location.origin}${window.location.pathname}?join=${state.roomCode}`;
             navigator.clipboard.writeText(link);
-            alert("Ссылка для друзей скопирована!");
+            alert("Ссылка скопирована!");
         }
 
         function parseUrl(url) {
@@ -208,56 +259,63 @@
             const name = document.getElementById('name-in').value || "Аноним";
             const code = document.getElementById('code-in').value;
             const proto = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-            state.ws = new WebSocket(`${proto}//${window.location.host}`);
-
-            state.ws.onopen = () => state.ws.send(JSON.stringify({ type, name, code }));
             
-            state.ws.onmessage = (e) => {
-                const d = JSON.parse(e.data);
-                if (d.type === 'room_created' || d.type === 'joined') {
-                    state.isHost = d.isHost || (d.type === 'room_created');
-                    state.myId = d.clientId;
-                    state.roomCode = d.code;
-                    document.getElementById('screen-menu').style.display = 'none';
-                    document.getElementById('screen-app').classList.add('active');
-                    document.getElementById('vis-btn').style.display = 'flex';
-                    document.getElementById('room-id-val').innerText = d.code;
-                    
-                    // Обновляем код комнаты в новой рамке
-                    document.getElementById('room-id-val-display').innerText = d.code;
-                    
-                    if (d.videoUrl) document.getElementById('video-frame').src = d.videoUrl;
-                }
-                if (d.type === 'set_video') document.getElementById('video-frame').src = d.url;
-                if (d.type === 'chat') {
-                    const div = document.createElement('div');
-                    const me = d.clientId === state.myId;
-                    div.className = `bubble ${me ? 'me' : ''}`;
-                    div.innerHTML = `<span style="font-size:10px; opacity:0.5; display:block;">${me ? 'Вы' : d.sender}</span>${d.text}
-                    <div class="reacts"><span>👍</span><span>🔥</span><span>❤️</span></div>`;
-                    document.getElementById('chat-scroll').appendChild(div);
-                    document.getElementById('chat-scroll').scrollTop = document.getElementById('chat-scroll').scrollHeight;
-                }
-            };
+            // Заглушка для демонстрации, если сервер не подключен
+            try {
+                state.ws = new WebSocket(`${proto}//${window.location.host}`);
+                state.ws.onopen = () => state.ws.send(JSON.stringify({ type, name, code }));
+                state.ws.onmessage = (e) => {
+                    const d = JSON.parse(e.data);
+                    handleServerMessage(d);
+                };
+            } catch(e) {
+                console.log("Ошибка подключения. Проверьте серверную часть.");
+            }
+        }
+
+        function handleServerMessage(d) {
+            if (d.type === 'room_created' || d.type === 'joined') {
+                state.isHost = d.isHost || (d.type === 'room_created');
+                state.myId = d.clientId;
+                state.roomCode = d.code;
+                document.getElementById('screen-menu').style.display = 'none';
+                document.getElementById('screen-app').classList.add('active');
+                document.getElementById('vis-btn').style.display = 'flex';
+                document.getElementById('room-id-val-display').innerText = d.code;
+                if (d.videoUrl) document.getElementById('video-frame').src = d.videoUrl;
+            }
+            if (d.type === 'set_video') document.getElementById('video-frame').src = d.url;
+            if (d.type === 'chat') {
+                const div = document.createElement('div');
+                const me = d.clientId === state.myId;
+                div.className = `bubble ${me ? 'me' : ''}`;
+                div.innerHTML = `<span style="font-size:10px; opacity:0.6; display:block; margin-bottom:2px;">${me ? 'Вы' : d.sender}</span>${d.text}`;
+                const scroll = document.getElementById('chat-scroll');
+                scroll.appendChild(div);
+                scroll.scrollTop = scroll.scrollHeight;
+            }
         }
 
         function setVideo() {
-            if (!state.isHost) return alert("Только хост меняет видео");
-            const url = parseUrl(document.getElementById('url-input').value);
-            state.ws.send(JSON.stringify({ type: 'set_video', url }));
+            const val = document.getElementById('url-input').value;
+            if (!val) return;
+            const url = parseUrl(val);
+            if (state.ws && state.ws.readyState === WebSocket.OPEN) {
+                state.ws.send(JSON.stringify({ type: 'set_video', url }));
+            }
             document.getElementById('video-frame').src = url;
             document.getElementById('url-input').value = "";
         }
 
         function sendChat() {
-            const m = document.getElementById('chat-msg').value;
-            if (m) {
+            const input = document.getElementById('chat-msg');
+            const m = input.value;
+            if (m && state.ws) {
                 state.ws.send(JSON.stringify({ type: 'chat', text: m }));
-                document.getElementById('chat-msg').value = "";
+                input.value = "";
             }
         }
 
-        // Авто-подстановка кода из ссылки
         window.onload = () => {
             const params = new URLSearchParams(window.location.search);
             const joinCode = params.get('join');

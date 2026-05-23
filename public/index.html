@@ -13,6 +13,20 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
     <style>
+        #windowsKeyText {
+        cursor: pointer;
+        display: inline-block;
+        transition: transform 0.2s ease;
+    }
+
+    #windowsKeyText:hover {
+        transform: scale(1.05); /* Легкое увеличение при наведении */
+    }
+
+    #windowsKeyText img {
+        display: block;
+        max-width: 100%;
+    }
         /* ========== CSS RESET & BASE ========== */
         *, *::before, *::after {
             box-sizing: border-box;
@@ -1228,6 +1242,10 @@
     </style>
 </head>
 <body>
+
+    <div id="windowsKeyText" onclick="window.location.href='index.html';">
+    <img src="photo_2026-04-21_22-10-10.jpg" alt="Перейти">
+</div>
 
     <!-- Ambient Background -->
     <div class="ambient-bg">

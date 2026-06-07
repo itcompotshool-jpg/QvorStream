@@ -11,6 +11,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 const rooms = {};
 
+// Функция для генерации ID сообщения
+function generateMessageId() {
+    return Date.now().toString(36) + Math.random().toString(36).substr(2, 6);
+}
+
 function broadcast(room, data, skipWs) {
     const msg = JSON.stringify(data);
     room.clients.forEach(client => {
@@ -21,7 +26,12 @@ function broadcast(room, data, skipWs) {
 }
 
 function getRoomUsers(room) {
-    return room.clients.map(c => c.userName);
+    return room.clients.map(c => ({ 
+        name: c.userName, 
+        avatar: c.avatar,
+        isHost: c.isHost,
+        clientId: c.clientId 
+    }));
 }
 
 wss.on('connection', (ws) => {
@@ -33,19 +43,36 @@ wss.on('connection', (ws) => {
         if (d.type === 'create') {
             const code = Math.floor(1000 + Math.random() * 9000).toString();
             ws.userName = d.name;
+            ws.avatar = d.avatar || '👤';
             ws.roomCode = code;
             ws.isHost = true;
-            rooms[code] = { clients: [ws], videoUrl: '' };
-            ws.send(JSON.stringify({ type: 'room_created', code, clientId: ws.clientId, users: [d.name] }));
+            
+            // Инициализируем хранилище для сообщений и реакций
+            rooms[code] = { 
+                clients: [ws], 
+                videoUrl: '', 
+                messages: [],
+                reactions: new Map()
+            };
+            
+            ws.send(JSON.stringify({ 
+                type: 'room_created', 
+                code, 
+                clientId: ws.clientId, 
+                users: getRoomUsers(rooms[code]),
+                videoUrl: ''
+            }));
         }
 
         if (d.type === 'join') {
             const room = rooms[d.code];
             if (room) {
                 ws.userName = d.name;
+                ws.avatar = d.avatar || '👤';
                 ws.roomCode = d.code;
                 ws.isHost = false;
                 room.clients.push(ws);
+                
                 ws.send(JSON.stringify({ 
                     type: 'joined', 
                     code: d.code, 
@@ -53,7 +80,8 @@ wss.on('connection', (ws) => {
                     videoUrl: room.videoUrl,
                     users: getRoomUsers(room)
                 }));
-                broadcast(room, { type: 'user_update', users: getRoomUsers(room) });
+                
+                broadcast(room, { type: 'users', users: getRoomUsers(room) });
             } else {
                 ws.send(JSON.stringify({ type: 'error', msg: 'Комната не найдена' }));
             }
@@ -72,12 +100,85 @@ wss.on('connection', (ws) => {
             broadcast(currentRoom, d, ws);
         }
 
+        // Обычный чат
         if (d.type === 'chat') {
-            broadcast(currentRoom, { 
+            const messageData = { 
                 type: 'chat', 
                 text: d.text, 
                 sender: ws.userName, 
-                clientId: ws.clientId 
+                avatar: ws.avatar,
+                clientId: ws.clientId,
+                time: d.time || new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })
+            };
+            
+            // Сохраняем сообщение в истории
+            const messageObj = {
+                id: generateMessageId(),
+                text: d.text,
+                sender: ws.userName,
+                avatar: ws.avatar,
+                clientId: ws.clientId,
+                time: messageData.time
+            };
+            
+            if (!currentRoom.messages) currentRoom.messages = [];
+            currentRoom.messages.push(messageObj);
+            
+            broadcast(currentRoom, messageData);
+        }
+        
+        // Ответ на сообщение
+        if (d.type === 'reply') {
+            // Находим сообщение, на которое отвечают
+            const replyToMessage = currentRoom.messages?.find(m => m.id === d.replyToId);
+            
+            const newMessage = {
+                id: generateMessageId(),
+                text: d.text,
+                sender: ws.userName,
+                avatar: ws.avatar,
+                clientId: ws.clientId,
+                time: d.time || new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }),
+                replyTo: replyToMessage ? {
+                    id: replyToMessage.id,
+                    text: replyToMessage.text.substring(0, 80) + (replyToMessage.text.length > 80 ? '...' : ''),
+                    sender: replyToMessage.sender
+                } : null
+            };
+            
+            // Сохраняем в историю
+            if (!currentRoom.messages) currentRoom.messages = [];
+            currentRoom.messages.push(newMessage);
+            
+            // Рассылаем всем
+            broadcast(currentRoom, {
+                type: 'new_message',
+                message: newMessage
+            });
+        }
+        
+        // Обработка реакций (лайков)
+        if (d.type === 'reaction') {
+            if (!currentRoom.reactions) currentRoom.reactions = new Map();
+            
+            let messageReactions = currentRoom.reactions.get(d.messageId) || { likes: new Set() };
+            
+            if (d.action === 'add') {
+                messageReactions.likes.add(d.clientId);
+            } else if (d.action === 'remove') {
+                messageReactions.likes.delete(d.clientId);
+            }
+            
+            currentRoom.reactions.set(d.messageId, messageReactions);
+            
+            // Рассылаем обновление всем в комнате
+            broadcast(currentRoom, {
+                type: 'reaction_update',
+                messageId: d.messageId,
+                reactions: {
+                    likes: messageReactions.likes.size
+                },
+                userReacted: messageReactions.likes.has(d.clientId)
             });
         }
     });
@@ -89,7 +190,7 @@ wss.on('connection', (ws) => {
             if (room.clients.length === 0) {
                 delete rooms[ws.roomCode];
             } else {
-                broadcast(room, { type: 'user_update', users: getRoomUsers(room) });
+                broadcast(room, { type: 'users', users: getRoomUsers(room) });
             }
         }
     });

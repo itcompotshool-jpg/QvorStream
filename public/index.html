@@ -1239,6 +1239,228 @@
                 padding-right: max(var(--space-lg), env(safe-area-inset-right));
             }
         }
+/* ========== СТИЛИ ДЛЯ ОТВЕТОВ КАК В TELEGRAM ========== */
+
+/* Сообщение */
+.message {
+    position: relative;
+}
+
+/* Блок прикреплённого ответа над полем ввода (как в Telegram) */
+.reply-attachment {
+    margin: 0 var(--space-lg) var(--space-sm) var(--space-lg);
+    padding: 10px 12px;
+    background: var(--bg-glass);
+    backdrop-filter: blur(20px);
+    border-left: 3px solid var(--accent);
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: slideDown 0.25s var(--ease-spring);
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.reply-attachment-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.reply-attachment-label {
+    font-size: 11px;
+    color: var(--accent-light);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+}
+
+.reply-attachment-text {
+    font-size: 13px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.reply-attachment-text strong {
+    color: var(--accent-light);
+    font-weight: 600;
+}
+
+.reply-attachment-cancel {
+    background: var(--bg-glass-hover);
+    border: none;
+    border-radius: var(--radius-full);
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--text-muted);
+    transition: all var(--duration-fast);
+    flex-shrink: 0;
+}
+
+.reply-attachment-cancel:hover {
+    background: var(--bg-glass-active);
+    color: var(--text-primary);
+}
+
+/* Блок с ответом ВНУТРИ сообщения (как в Telegram) */
+.message-reply-preview {
+    background: rgba(99, 102, 241, 0.1);
+    border-left: 3px solid var(--accent);
+    border-radius: var(--radius-sm);
+    padding: 8px 12px;
+    margin-bottom: 8px;
+    font-size: 12px;
+}
+
+.message.own .message-reply-preview {
+    background: rgba(255, 255, 255, 0.1);
+    border-left-color: rgba(255, 255, 255, 0.5);
+}
+
+.reply-preview-sender {
+    color: var(--accent-light);
+    font-weight: 600;
+    font-size: 11px;
+    margin-bottom: 2px;
+}
+
+.message.own .reply-preview-sender {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.reply-preview-text {
+    color: var(--text-secondary);
+    font-size: 12px;
+    word-break: break-word;
+}
+
+.message.own .reply-preview-text {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* Кнопки действий (ответить, лайк) */
+.message-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 4px;
+    opacity: 0;
+    transition: opacity var(--duration-fast);
+}
+
+.message:hover .message-actions {
+    opacity: 1;
+}
+
+.message-action-btn {
+    background: transparent;
+    border: none;
+    padding: 4px 8px;
+    border-radius: var(--radius-full);
+    font-size: 11px;
+    color: var(--text-muted);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: all var(--duration-fast);
+}
+
+.message-action-btn:hover {
+    background: var(--bg-glass);
+    color: var(--accent-light);
+}
+
+/* Кнопка лайка */
+.like-btn {
+    background: transparent;
+    border: none;
+    padding: 4px 8px;
+    border-radius: var(--radius-full);
+    font-size: 12px;
+    color: var(--text-muted);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: all var(--duration-fast);
+    position: relative;
+}
+
+.like-btn:hover {
+    background: var(--bg-glass);
+}
+
+/* Пустое сердечко (обычное состояние) */
+.like-btn i {
+    transition: all 0.2s var(--ease-spring);
+}
+
+/* Залитое красное сердечко при лайке */
+.like-btn.liked {
+    color: #ef4444;
+}
+
+.like-btn.liked i {
+    fill: #ef4444;  /* Заливка сердечка красным */
+    stroke: #ef4444; /* Убираем обводку */
+}
+
+.like-btn.liked:hover {
+    background: rgba(239, 68, 68, 0.1);
+}
+
+/* Анимация при нажатии */
+.like-btn:active {
+    transform: scale(0.9);
+}
+
+.like-btn.liked:active {
+    transform: scale(0.9);
+}
+
+/* Индикатор лайков */
+.likes-count {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-left: 4px;
+}
+
+.like-btn.liked .likes-count {
+    color: #ef4444;
+}
+
+.like-btn.liked:hover {
+    background: rgba(239, 68, 68, 0.1);
+}
+
+/* Индикатор лайков */
+.likes-count {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-left: 4px;
+}
+
+/* Подсветка поля ввода при ответе */
+.reply-mode-active .chat-input input {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+}
     </style>
 </head>
 <body>
@@ -1482,6 +1704,9 @@
             { emoji: '🐼', name: 'Панда' }
         ];
 
+        // ========== ПЕРЕМЕННЫЕ ДЛЯ ОТВЕТОВ ==========
+        let replyContext = null;
+
         // ========== INIT ==========
         document.addEventListener('DOMContentLoaded', () => {
             loadSettings();
@@ -1674,49 +1899,180 @@
         }
 
         // ========== CHAT ==========
+        function replyToMessage(messageId, sender, text) {
+            replyContext = { messageId, sender, text };
+            
+            // Показываем индикатор ответа
+            let indicator = document.getElementById('reply-indicator');
+            
+            if (!indicator) {
+                indicator = document.createElement('div');
+                indicator.id = 'reply-indicator';
+                indicator.className = 'reply-indicator';
+                document.body.appendChild(indicator);
+            }
+            
+            indicator.innerHTML = `
+                <div class="reply-indicator-content">
+                    Ответ <strong>${escapeHtml(sender)}</strong>: 
+                    "${escapeHtml(text.substring(0, 50))}${text.length > 50 ? '...' : ''}"
+                </div>
+                <button class="reply-indicator-cancel" onclick="cancelReply()">
+                    <i data-lucide="x" style="width:14px; height:14px;"></i>
+                </button>
+            `;
+            
+            indicator.style.display = 'flex';
+            lucide.createIcons();
+            
+            // Подсвечиваем поле ввода
+            const chatMsg = document.getElementById('chat-msg');
+            chatMsg.focus();
+            chatMsg.placeholder = `Ответ ${sender}...`;
+        }
+
+        function cancelReply() {
+            replyContext = null;
+            const indicator = document.getElementById('reply-indicator');
+            if (indicator) indicator.style.display = 'none';
+            document.getElementById('chat-msg').placeholder = 'Написать сообщение...';
+        }
+
+        function toggleLike(button, messageId) {
+    const isLiked = button.classList.contains('liked');
+    const action = isLiked ? 'remove' : 'add';
+    
+    // Анимация при нажатии
+    button.style.transform = 'scale(1.2)';
+    setTimeout(() => {
+        button.style.transform = '';
+    }, 150);
+    
+    if (state.ws && state.ws.readyState === WebSocket.OPEN) {
+        state.ws.send(JSON.stringify({
+            type: 'reaction',
+            action: action,
+            messageId: messageId,
+            clientId: state.myId,
+            roomCode: state.roomCode
+        }));
+    }
+    
+    // Оптимистичное обновление UI
+    const likesSpan = button.querySelector('.likes-count');
+    let currentLikes = parseInt(likesSpan.textContent) || 0;
+    
+    if (!isLiked) {
+        button.classList.add('liked');
+        likesSpan.textContent = currentLikes + 1;
+    } else {
+        button.classList.remove('liked');
+        likesSpan.textContent = Math.max(0, currentLikes - 1);
+    }
+}
+
+        function handleReactionUpdate(data) {
+            const messageElements = document.querySelectorAll('.message');
+            for (const msgEl of messageElements) {
+                if (msgEl.dataset.messageId === data.messageId) {
+                    const likeBtn = msgEl.querySelector('.like-btn');
+                    if (likeBtn) {
+                        const likesSpan = likeBtn.querySelector('.likes-count');
+                        likesSpan.textContent = data.reactions.likes;
+                        
+                        if (data.userReacted) {
+                            likeBtn.classList.add('liked');
+                        } else {
+                            likeBtn.classList.remove('liked');
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+
         function sendChat() {
             const input = document.getElementById('chat-msg');
             const text = input.value.trim();
             if (!text) return;
             
-            const msgData = {
-                type: 'chat',
-                text,
+            const messageData = {
+                type: replyContext ? 'reply' : 'chat',
+                text: text,
                 sender: state.profile.name || 'Аноним',
                 avatar: state.profile.avatar,
                 clientId: state.myId,
-                time: new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })
+                time: new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }),
+                roomCode: state.roomCode
             };
             
+            if (replyContext) {
+                messageData.replyToId = replyContext.messageId;
+            }
+            
             if (state.ws && state.ws.readyState === WebSocket.OPEN) {
-                state.ws.send(JSON.stringify(msgData));
+                state.ws.send(JSON.stringify(messageData));
             } else {
                 // Demo mode
-                addMessage({ ...msgData, own: true });
+                addMessage({ 
+                    ...messageData, 
+                    own: true,
+                    id: Date.now().toString(),
+                    replyTo: replyContext ? {
+                        id: replyContext.messageId,
+                        text: replyContext.text,
+                        sender: replyContext.sender
+                    } : null
+                });
             }
             
             input.value = '';
+            cancelReply();
         }
 
         function addMessage(data) {
             const container = document.getElementById('chat-messages');
             const msg = document.createElement('div');
             msg.className = 'message' + (data.own ? ' own' : '');
+            msg.dataset.messageId = data.id || Date.now().toString();
+            
+            let replyHtml = '';
+            if (data.replyTo) {
+                replyHtml = `
+                    <div class="message-reply">
+                        <span class="reply-sender">${escapeHtml(data.replyTo.sender)}</span>
+                        <span class="reply-text">→ ${escapeHtml(data.replyTo.text)}</span>
+                    </div>
+                `;
+            }
             
             msg.innerHTML = `
                 <div class="message-avatar">${data.avatar || '👤'}</div>
                 <div class="message-body">
+                    ${replyHtml}
                     <div class="message-bubble">${escapeHtml(data.text)}</div>
                     <div class="message-meta">
                         <span>${escapeHtml(data.sender || 'Аноним')}</span>
                         <span>•</span>
                         <span>${data.time || ''}</span>
                     </div>
+                    <div class="message-actions">
+                        <button class="message-action-btn" onclick="replyToMessage('${msg.dataset.messageId}', '${escapeHtml(data.sender || 'Аноним')}', '${escapeHtml(data.text).substring(0, 50).replace(/'/g, "\\'")}')">
+                            <i data-lucide="reply" style="width:12px; height:12px;"></i>
+                            Ответить
+                        </button>
+
+<button class="like-btn" data-message-id="${msg.dataset.messageId}" onclick="toggleLike(this, '${msg.dataset.messageId}')">
+    <i data-lucide="heart" style="width:14px; height:14px;"></i>
+    <span class="likes-count">0</span>
+</button>
+                    </div>
                 </div>
             `;
             
             container.appendChild(msg);
             container.scrollTop = container.scrollHeight;
+            lucide.createIcons();
         }
 
         function clearChat() {
@@ -1824,6 +2180,17 @@
                     own: d.clientId === state.myId,
                     time: d.time
                 });
+            }
+            
+            if (d.type === 'new_message') {
+                addMessage({
+                    ...d.message,
+                    own: d.message.clientId === state.myId
+                });
+            }
+            
+            if (d.type === 'reaction_update') {
+                handleReactionUpdate(d);
             }
             
             if (d.type === 'users') {

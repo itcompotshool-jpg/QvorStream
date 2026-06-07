@@ -27,7 +27,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
     <style>
- /* ========== CSS RESET & BASE ========== */
+ /* CSS базовая интеграция */
         *, *::before, *::after {
             box-sizing: border-box;
             margin: 0;
@@ -38,7 +38,7 @@
         }
 
         :root {
-            /* Colors */
+            /* цвет */
             --accent: #6366f1;
             --accent-light: #818cf8;
             --accent-dark: #4f46e5;
@@ -102,7 +102,7 @@
             
             /* Layout */
             --nav-height: 56px;
-            --chat-width: 480px;
+            --chat-width: 450px;
             --chat-width-mobile: 100%;
             --player-min-height: 220px;
         }
@@ -1239,7 +1239,7 @@
                 padding-right: max(var(--space-lg), env(safe-area-inset-right));
             }
         }
-/* ========== СТИЛИ ДЛЯ ОТВЕТОВ КАК В TELEGRAM ========== */
+/* стиль ответов */
 
 /* Сообщение */
 .message {
@@ -1464,16 +1464,16 @@
     </style>
 </head>
 <body>
-    <!-- Ambient Background -->
+    <!-- Задний фон -->
     <div class="ambient-bg">
         <div class="ambient-orb ambient-orb-1"></div>
         <div class="ambient-orb ambient-orb-2"></div>
     </div>
 
-    <!-- Toast Container -->
+    <!-- Контейнер для тостов -->
     <div class="toast-container" id="toast-container"></div>
 
-    <!-- Settings Modal -->
+    <!-- Окно настроек (модальное) -->
     <div class="modal-backdrop" id="settings-modal" onclick="closeSettingsBackdrop(event)">
         <div class="modal-sheet" onclick="event.stopPropagation()">
             <div class="modal-header">
@@ -1503,7 +1503,7 @@
                 </div>
 
                 <div class="setting-section">
-                    <div class="setting-label">Аватар</div>
+                    <div class="setting-label">Аватар(Иконка профиля)</div>
                     <div class="avatar-grid" id="avatar-grid"></div>
                 </div>
 
@@ -1515,20 +1515,20 @@
         </div>
     </div>
 
-    <!-- Sidebar Overlay -->
+    <!-- Боковая панель -->
     <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
 
-    <!-- Sidebar -->
+    <!-- Боковая панель (сбоку при создание комнаты) -->
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
-            <h2>Комната</h2>
+            <h2>Ваша комната</h2>
             <button class="btn-icon" onclick="toggleSidebar()">
                 <i data-lucide="x" style="width:18px; height:18px;"></i>
             </button>
         </div>
         <div class="sidebar-body">
             <div class="room-card">
-                <div class="room-card-label">Код комнаты</div>
+                <div class="room-card-label">Код комнаты (поделитесь им или ссылкой)</div>
                 <div class="room-card-code" id="room-code-display">----</div>
                 <button class="room-card-btn" onclick="copyInviteLink()">
                     <i data-lucide="copy" style="width:14px; height:14px;"></i>
@@ -1537,13 +1537,13 @@
             </div>
 
             <div class="users-list">
-                <h4>Участники — <span id="users-count">0</span></h4>
+                <h4>Смотрящие с вами — <span id="users-count">0</span></h4>
                 <div id="users-list"></div>
             </div>
         </div>
     </div>
 
-    <!-- Auth Screen -->
+    <!-- Экран аутентификации -->
     <div class="screen active" id="screen-auth">
         <div class="auth-wrapper">
             <div class="auth-brand">
@@ -1557,7 +1557,7 @@
             <div class="auth-form">
                 <div class="glass">
                     <input type="text" class="input" id="name-in" placeholder="Ваше имя" maxlength="20">
-                    <input type="text" class="input" id="code-in" placeholder="Код комнаты (если есть)">
+                    <input type="text" class="input" id="code-in" placeholder="Код комнаты (если подключаетесь)">
                     
                     <button class="btn btn-primary" onclick="connect('create')" style="width:100%;">
                         <i data-lucide="plus-circle" style="width:18px; height:18px;"></i>
@@ -1582,15 +1582,15 @@
         </div>
     </div>
 
-    <!-- App Screen -->
+    <!-- Экран приложения -->
     <div class="screen" id="screen-app">
-        <!-- Floating Nav Toggle -->
+        <!-- Плавающий переключатель навигации -->
         <button class="nav-reveal" id="nav-reveal" onclick="toggleNav()">
             <i data-lucide="chevron-down" style="width:16px; height:16px;"></i>
             Показать панель
         </button>
 
-        <!-- Top Navigation -->
+        <!-- Верхняя навигация -->
         <div class="app-nav" id="app-nav">
             <button class="btn-icon" onclick="toggleSidebar()">
                 <i data-lucide="menu" style="width:18px; height:18px;"></i>
@@ -1604,7 +1604,7 @@
             </div>
 
             <div class="nav-url">
-                <input type="text" id="url-input" placeholder="Ссылка на YouTube или VK...">
+                <input type="text" id="url-input" placeholder="Вствь ссылку...">
                 <button class="nav-url-btn" onclick="setVideo()">
                     <i data-lucide="play" style="width:16px; height:16px;"></i>
                 </button>
@@ -1623,9 +1623,9 @@
             </div>
         </div>
 
-        <!-- Main Content -->
+        <!-- Основное содержание -->
         <div class="app-content">
-            <!-- Player -->
+            <!-- Проигрыватель -->
             <div class="player-area">
                 <div class="player-frame" id="player-frame">
                     <iframe id="video-frame" src="" allow="autoplay; fullscreen" style="display:none;"></iframe>
@@ -1636,14 +1636,14 @@
              style="width: 120px; height: 120px; border-radius: 12px; object-fit: cover; margin-bottom: 10px;">
     </div>
     <div>
-        <h3>Нет</h3>
+        <h3>Нет видеоролика</h3>
         <p>Вставьте ссылку на YouTube или VK в панель сверху, чтобы начать совместный просмотр</p>
     </div>
 </div>
                 </div>
             </div>
 
-            <!-- Chat -->
+            <!-- Чат -->
             <div class="chat-area">
                 <div class="chat-header">
                     <div class="chat-header-info">
@@ -1651,8 +1651,8 @@
                             <i data-lucide="users" style="width:20px; height:20px;"></i>
                         </div>
                         <div class="chat-header-text">
-                            <h3>Чат комнаты</h3>
-                            <span id="chat-status">Онлайн</span>
+                            <h3 class="icon-message-circle-check">Внизу чат команты</h3>
+                            <span id="chat-status">Приятного просмотра!</span>
                         </div>
                     </div>
                     <button class="btn-icon" style="width:32px; height:32px;" onclick="clearChat()" title="Очистить чат">

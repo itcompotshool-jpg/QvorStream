@@ -9,648 +9,272 @@
     
     <title>QuorStream</title>
     <meta name="description" content="Сервис для совместного просмотра видео с YouTube и VK.">
-    <link rel="icon" href="/photo_2026-04-21_22-10-10.jpg" type="image/jpeg">
-
-    <meta property="og:title" content="QuorStream">
-    <meta property="og:description" content="Вставьте ссылку на YouTube или VK, чтобы начать совместный просмотр.">
-    <meta property="og:image" content="/public/photo_2026-04-21_22-10-10.jpg">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://qvorstream-2v3k.onrender.com">
-    <meta name="twitter:card" content="summary_large_image">
-
-    <script src="https://unpkg.com/lucide@latest"></script>
     
-    <link rel="icon" href="/public/photo_2026-04-21_22-10-10.jpg" type="image/jpeg">
-    <link rel="apple-touch-icon" href="/public/photo_2026-04-21_22-10-10.jpg">
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    
     <style>
- /* CSS базовая интеграция */
-        *, *::before, *::after {
-            box-sizing: border-box;
+        /* ========== RESET & BASE ========== */
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
         }
 
         :root {
-            /* цвет */
             --accent: #6366f1;
             --accent-light: #818cf8;
             --accent-dark: #4f46e5;
             --accent-glow: rgba(99, 102, 241, 0.3);
-            
             --danger: #ef4444;
             --success: #22c55e;
-            --warning: #f59e0b;
             
-            /* Dark theme (default) */
             --bg-primary: #0a0a0f;
             --bg-secondary: #12121a;
             --bg-tertiary: #1a1a25;
             --bg-elevated: #22222e;
-            --bg-glass: rgba(255, 255, 255, 0.03);
-            --bg-glass-hover: rgba(255, 255, 255, 0.06);
-            --bg-glass-active: rgba(255, 255, 255, 0.08);
+            --bg-glass: rgba(255, 255, 255, 0.04);
+            --bg-glass-hover: rgba(255, 255, 255, 0.08);
+            --bg-glass-active: rgba(255, 255, 255, 0.12);
             
             --text-primary: #f1f5f9;
             --text-secondary: #94a3b8;
             --text-muted: #64748b;
-            --text-inverse: #0f172a;
             
             --border-subtle: rgba(255, 255, 255, 0.04);
             --border-default: rgba(255, 255, 255, 0.08);
             --border-hover: rgba(255, 255, 255, 0.12);
-            --border-accent: rgba(99, 102, 241, 0.3);
             
-            /* Shadows */
-            --shadow-xs: 0 1px 2px rgba(0,0,0,0.3);
-            --shadow-sm: 0 2px 8px rgba(0,0,0,0.4);
-            --shadow-md: 0 4px 24px rgba(0,0,0,0.5);
-            --shadow-lg: 0 8px 40px rgba(0,0,0,0.6);
-            --shadow-glow: 0 0 60px rgba(99, 102, 241, 0.15);
-            --shadow-inset: inset 0 1px 0 rgba(255,255,255,0.04);
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.3);
+            --shadow-md: 0 4px 24px rgba(0,0,0,0.4);
+            --shadow-lg: 0 8px 48px rgba(0,0,0,0.5);
+            --shadow-glow: 0 0 60px var(--accent-glow);
             
-            /* Radius */
-            --radius-sm: 10px;
-            --radius-md: 14px;
+            --radius-sm: 8px;
+            --radius-md: 12px;
             --radius-lg: 20px;
             --radius-xl: 28px;
             --radius-full: 9999px;
             
-            /* Typography */
-            --font-display: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
-            --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-display: 'Space Grotesk', -apple-system, sans-serif;
+            --font-body: 'Inter', -apple-system, sans-serif;
             
-            /* Spacing */
-            --space-xs: 4px;
-            --space-sm: 8px;
-            --space-md: 16px;
-            --space-lg: 24px;
-            --space-xl: 32px;
-            
-            /* Transitions */
-            --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-            --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-            --duration-fast: 150ms;
-            --duration-base: 300ms;
-            --duration-slow: 500ms;
-            
-            /* Layout */
-            --nav-height: 56px;
-            --chat-width: 450px;
-            --chat-width-mobile: 100%;
-            --player-min-height: 220px;
+            --nav-height: 60px;
+            --bottom-nav-height: 64px;
         }
 
         [data-theme="light"] {
-            --bg-primary: #fafafa;
-            --bg-secondary: #f4f4f5;
-            --bg-tertiary: #e4e4e7;
+            --bg-primary: #f5f5f7;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #f0f0f2;
             --bg-elevated: #ffffff;
             --bg-glass: rgba(255, 255, 255, 0.6);
             --bg-glass-hover: rgba(255, 255, 255, 0.8);
             --bg-glass-active: rgba(255, 255, 255, 0.9);
-            
-            --text-primary: #18181b;
-            --text-secondary: #52525b;
-            --text-muted: #a1a1aa;
-            --text-inverse: #fafafa;
-            
+            --text-primary: #1a1a1e;
+            --text-secondary: #6e6e78;
+            --text-muted: #a8a8b0;
             --border-subtle: rgba(0, 0, 0, 0.04);
             --border-default: rgba(0, 0, 0, 0.08);
             --border-hover: rgba(0, 0, 0, 0.12);
-            --border-accent: rgba(99, 102, 241, 0.2);
-            
-            --shadow-xs: 0 1px 2px rgba(0,0,0,0.04);
-            --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
-            --shadow-md: 0 4px 24px rgba(0,0,0,0.08);
-            --shadow-lg: 0 8px 40px rgba(0,0,0,0.1);
-            --shadow-glow: 0 0 60px rgba(99, 102, 241, 0.1);
-            --shadow-inset: inset 0 1px 0 rgba(255,255,255,0.5);
         }
 
-        html {
-            height: 100%;
-            overflow: hidden;
+        [data-theme="ocean"] {
+            --bg-primary: #0a1628;
+            --bg-secondary: #0f1f33;
+            --bg-tertiary: #14283f;
+            --bg-elevated: #1a3050;
+            --bg-glass: rgba(20, 60, 120, 0.15);
+            --bg-glass-hover: rgba(20, 60, 120, 0.25);
+            --bg-glass-active: rgba(20, 60, 120, 0.35);
+            --text-primary: #e0f0ff;
+            --text-secondary: #8ab4e8;
+            --text-muted: #5a8ab0;
+            --border-subtle: rgba(60, 140, 220, 0.1);
+            --border-default: rgba(60, 140, 220, 0.2);
+            --border-hover: rgba(60, 140, 220, 0.3);
+            --accent: #4a8fe0;
+            --accent-light: #6aaff0;
+            --accent-dark: #3a7fc0;
+            --accent-glow: rgba(74, 143, 224, 0.3);
         }
 
-        body {
+        [data-theme="purple"] {
+            --bg-primary: #0a0a18;
+            --bg-secondary: #12122a;
+            --bg-tertiary: #1a1a3a;
+            --bg-elevated: #22224a;
+            --bg-glass: rgba(120, 80, 200, 0.12);
+            --bg-glass-hover: rgba(120, 80, 200, 0.22);
+            --bg-glass-active: rgba(120, 80, 200, 0.32);
+            --text-primary: #f0e8ff;
+            --text-secondary: #b8a0e8;
+            --text-muted: #8070a8;
+            --border-subtle: rgba(120, 80, 200, 0.1);
+            --border-default: rgba(120, 80, 200, 0.2);
+            --border-hover: rgba(120, 80, 200, 0.3);
+            --accent: #8b6fe0;
+            --accent-light: #a88ff0;
+            --accent-dark: #7a5fc0;
+            --accent-glow: rgba(139, 111, 224, 0.3);
+        }
+
+        html, body {
             height: 100%;
-            height: 100dvh;
             background: var(--bg-primary);
             color: var(--text-primary);
             font-family: var(--font-body);
             font-size: 15px;
-            line-height: 1.5;
             overflow: hidden;
-            position: fixed;
-            width: 100%;
-            transition: background var(--duration-slow) var(--ease-out);
+            transition: background 0.4s ease;
         }
 
         /* ========== SCROLLBAR ========== */
-        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { 
-            background: var(--border-hover); 
-            border-radius: 10px; 
-        }
-        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+        ::-webkit-scrollbar-thumb { background: var(--border-default); border-radius: 10px; }
 
-        /* ========== AMBIENT BG ========== */
-        .ambient-bg {
+        /* ========== LOADING ========== */
+        #loading-screen {
             position: fixed;
             inset: 0;
-            z-index: 0;
-            pointer-events: none;
-            overflow: hidden;
-        }
-        .ambient-orb {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(80px);
-            opacity: 0.4;
-            animation: orb-float 20s ease-in-out infinite;
-        }
-        .ambient-orb-1 {
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, var(--accent-glow), transparent 70%);
-            top: -20%;
-            left: -10%;
-            animation-delay: 0s;
-        }
-        .ambient-orb-2 {
-            width: 500px;
-            height: 500px;
-            background: radial-gradient(circle, rgba(139, 92, 246, 0.2), transparent 70%);
-            bottom: -15%;
-            right: -10%;
-            animation-delay: -7s;
-            animation-duration: 25s;
-        }
-        @keyframes orb-float {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            25% { transform: translate(40px, -30px) scale(1.05); }
-            50% { transform: translate(-20px, 20px) scale(0.95); }
-            75% { transform: translate(30px, 10px) scale(1.02); }
-        }
-
-        /* ========== UTILITIES ========== */
-        .glass {
-            background: var(--bg-glass);
-            backdrop-filter: blur(40px) saturate(160%);
-            -webkit-backdrop-filter: blur(40px) saturate(160%);
-            border: 1px solid var(--border-default);
-            box-shadow: var(--shadow-sm), var(--shadow-inset);
-        }
-        .glass-hover:hover {
-            background: var(--bg-glass-hover);
-            border-color: var(--border-hover);
-        }
-
-        /* ========== BUTTONS ========== */
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 12px 20px;
-            border-radius: var(--radius-md);
-            font-family: var(--font-body);
-            font-size: 14px;
-            font-weight: 600;
-            line-height: 1;
-            cursor: pointer;
-            border: none;
-            transition: all var(--duration-base) var(--ease-out);
-            position: relative;
-            overflow: hidden;
-            white-space: nowrap;
-        }
-        .btn::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(180deg, rgba(255,255,255,0.1), transparent);
-            opacity: 0;
-            transition: opacity var(--duration-base);
-        }
-        .btn:hover::after { opacity: 1; }
-        .btn:active { transform: scale(0.97); }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
-            color: white;
-            box-shadow: 0 4px 16px rgba(99, 102, 241, 0.35), var(--shadow-inset);
-        }
-        .btn-primary:hover {
-            box-shadow: 0 6px 24px rgba(99, 102, 241, 0.45), var(--shadow-inset);
-            transform: translateY(-1px);
-        }
-
-        .btn-secondary {
-            background: var(--bg-tertiary);
-            color: var(--text-primary);
-            border: 1px solid var(--border-default);
-        }
-        .btn-secondary:hover {
-            background: var(--bg-elevated);
-            border-color: var(--border-hover);
-        }
-
-        .btn-ghost {
-            background: transparent;
-            color: var(--text-secondary);
-            padding: 8px 12px;
-        }
-        .btn-ghost:hover {
-            background: var(--bg-glass);
-            color: var(--text-primary);
-        }
-
-        .btn-icon {
-            width: 40px;
-            height: 40px;
-            padding: 0;
-            border-radius: var(--radius-md);
-            background: transparent;
-            color: var(--text-secondary);
-            border: 1px solid transparent;
-        }
-        .btn-icon:hover {
-            background: var(--bg-glass);
-            color: var(--text-primary);
-            border-color: var(--border-default);
-        }
-        .btn-icon:active { transform: scale(0.92); }
-
-        /* ========== INPUTS ========== */
-        .input {
-            width: 100%;
-            padding: 12px 16px;
-            border-radius: var(--radius-md);
-            border: 1px solid var(--border-default);
-            background: var(--bg-glass);
-            color: var(--text-primary);
-            font-family: var(--font-body);
-            font-size: 15px;
-            outline: none;
-            transition: all var(--duration-base) var(--ease-out);
-        }
-        .input::placeholder { color: var(--text-muted); }
-        .input:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px var(--accent-glow), var(--shadow-xs);
-            background: var(--bg-glass-hover);
-        }
-
-        /* ========== SCREENS ========== */
-        .screen {
-            position: fixed;
-            inset: 0;
-            z-index: 10;
-            display: none;
-            overflow: hidden;
-        }
-        .screen.active { display: flex; }
-
-        /* ========== AUTH SCREEN ========== */
-        #screen-auth {
-            align-items: center;
-            justify-content: center;
-            padding: var(--space-md);
-            padding-bottom: max(var(--space-md), env(safe-area-inset-bottom));
-        }
-
-        .auth-wrapper {
-            width: 100%;
-            max-width: 400px;
+            z-index: 9999;
+            background: var(--bg-primary);
             display: flex;
             flex-direction: column;
-            gap: var(--space-xl);
-            animation: auth-enter 0.7s var(--ease-out);
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.6s ease, transform 0.6s ease;
         }
-        @keyframes auth-enter {
-            from { opacity: 0; transform: translateY(40px) scale(0.96); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
+        #loading-screen.hidden {
+            opacity: 0;
+            transform: scale(1.05);
+            pointer-events: none;
         }
-
-        .auth-brand {
-            text-align: center;
-        }
-        .auth-logo {
+        .loader-ring {
             width: 80px;
             height: 80px;
-            margin: 0 auto var(--space-md);
-            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
-            border-radius: var(--radius-xl);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            border-radius: 50%;
+            border: 3px solid var(--border-default);
+            border-top-color: var(--accent);
+            animation: spin 1s linear infinite;
+            margin-bottom: 24px;
             position: relative;
-            box-shadow: var(--shadow-glow);
         }
-        .auth-logo::before {
-            content: '';
+        .loader-ring::after {
+            content: '▶';
             position: absolute;
-            inset: -3px;
-            border-radius: inherit;
-            background: inherit;
-            filter: blur(16px);
-            opacity: 0.5;
-            z-index: -1;
-        }
-        .auth-logo svg {
-            width: 36px;
-            height: 36px;
-            color: white;
-        }
-        .auth-brand h1 {
-            font-family: var(--font-display);
-            font-size: 32px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            margin-bottom: 6px;
-        }
-        .auth-brand p {
-            color: var(--text-secondary);
-            font-size: 15px;
-        }
-
-        .auth-form {
-            display: flex;
-            flex-direction: column;
-            gap: var(--space-md);
-        }
-        .auth-form .glass {
-            padding: var(--space-lg);
-            border-radius: var(--radius-xl);
-            display: flex;
-            flex-direction: column;
-            gap: var(--space-md);
-        }
-
-        .auth-divider {
-            display: flex;
-            align-items: center;
-            gap: var(--space-md);
-            color: var(--text-muted);
-            font-size: 13px;
-            font-weight: 500;
-        }
-        .auth-divider::before, .auth-divider::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: var(--border-default);
-        }
-
-        .auth-footer {
-            display: flex;
-            justify-content: center;
-        }
-
-        /* ========== MODALS ========== */
-        .modal-backdrop {
-            position: fixed;
             inset: 0;
-            z-index: 3000;
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: var(--space-md);
-            opacity: 0;
-            transition: opacity var(--duration-base);
-        }
-        .modal-backdrop.open {
-            display: flex;
-            opacity: 1;
-        }
-
-        .modal-sheet {
-            width: 100%;
-            max-width: 440px;
-            max-height: 85vh;
-            background: var(--bg-secondary);
-            border-radius: var(--radius-xl);
-            border: 1px solid var(--border-default);
-            box-shadow: var(--shadow-lg);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            transform: scale(0.92) translateY(30px);
-            transition: transform var(--duration-base) var(--ease-spring);
-        }
-        .modal-backdrop.open .modal-sheet {
-            transform: scale(1) translateY(0);
-        }
-
-        .modal-header {
-            padding: var(--space-lg) var(--space-lg) var(--space-md);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-shrink: 0;
-        }
-        .modal-header h2 {
-            font-family: var(--font-display);
-            font-size: 22px;
-            font-weight: 700;
-        }
-
-        .modal-body {
-            padding: 0 var(--space-lg) var(--space-lg);
-            overflow-y: auto;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: var(--space-lg);
-        }
-
-        .setting-section {
-            display: flex;
-            flex-direction: column;
-            gap: var(--space-sm);
-        }
-        .setting-label {
-            font-size: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-            color: var(--text-muted);
-        }
-
-        .theme-switcher {
-            display: flex;
-            gap: var(--space-sm);
-            padding: 4px;
-            background: var(--bg-tertiary);
-            border-radius: var(--radius-md);
-        }
-        .theme-option {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            padding: 10px;
-            border-radius: var(--radius-sm);
-            border: none;
-            background: transparent;
-            color: var(--text-secondary);
-            font-family: var(--font-body);
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all var(--duration-fast);
-        }
-        .theme-option.active {
-            background: var(--bg-glass);
-            color: var(--text-primary);
-            box-shadow: var(--shadow-xs);
-        }
-
-        .avatar-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: var(--space-sm);
-        }
-        .avatar-item {
-            aspect-ratio: 1;
-            border-radius: var(--radius-full);
-            background: var(--bg-tertiary);
-            border: 2px solid transparent;
-            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 24px;
-            transition: all var(--duration-base) var(--ease-spring);
-            position: relative;
+            color: var(--accent);
+            animation: pulse 1.5s ease-in-out infinite;
         }
-        .avatar-item:hover { transform: scale(1.1); }
-        .avatar-item.selected {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px var(--accent-glow);
-            background: var(--bg-glass-hover);
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes pulse { 0%, 100% { opacity: 0.5; transform: scale(0.9); } 50% { opacity: 1; transform: scale(1); } }
+        .loader-text {
+            font-family: var(--font-display);
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light), var(--accent));
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmer 3s ease-in-out infinite;
         }
-        .avatar-item.selected::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            right: -2px;
-            width: 16px;
-            height: 16px;
-            background: var(--accent);
-            border-radius: 50%;
-            border: 2px solid var(--bg-secondary);
-        }
+        @keyframes shimmer { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
 
-        /* ========== APP SCREEN ========== */
-        #screen-app {
+        /* ========== APP ========== */
+        #app {
+            display: none;
+            height: 100%;
             flex-direction: column;
         }
+        #app.active { display: flex; }
 
-        /* Top Navigation */
-        .app-nav {
+        /* ========== TOP NAV ========== */
+        .top-nav {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             z-index: 100;
             height: var(--nav-height);
-            padding: 0 var(--space-md);
+            padding: 0 16px;
             padding-top: env(safe-area-inset-top);
-            background: rgba(10, 10, 15, 0.75);
-            backdrop-filter: blur(40px) saturate(150%);
-            -webkit-backdrop-filter: blur(40px) saturate(150%);
+            background: var(--bg-glass);
+            backdrop-filter: blur(40px) saturate(160%);
+            -webkit-backdrop-filter: blur(40px) saturate(160%);
             border-bottom: 1px solid var(--border-subtle);
             display: flex;
             align-items: center;
-            gap: var(--space-sm);
-            transition: transform var(--duration-slow) var(--ease-out), opacity var(--duration-slow);
+            gap: 12px;
         }
-        [data-theme="light"] .app-nav {
-            background: rgba(250, 250, 250, 0.8);
-        }
-        .app-nav.hidden {
-            transform: translateY(calc(-100% - env(safe-area-inset-top)));
-            opacity: 0;
-        }
-
-        .nav-logo {
+        .top-nav .logo {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+            flex-shrink: 0;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .top-nav .logo img {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-md);
+            object-fit: cover;
+            box-shadow: 0 2px 12px var(--accent-glow);
+        }
+        .top-nav .logo span {
             font-family: var(--font-display);
             font-weight: 700;
-            font-size: 17px;
-            color: var(--text-primary);
-            flex-shrink: 0;
+            font-size: 20px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light), var(--accent));
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmer 3s ease-in-out infinite;
         }
-        .nav-logo-icon {
-            width: 32px;
-            height: 32px;
-            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
-        }
+        .top-nav .logo .logo-text { display: inline; }
 
-        .nav-url {
+        .search-bar {
             flex: 1;
-            max-width: 480px;
+            max-width: 400px;
             position: relative;
         }
-        .nav-url input {
+        .search-bar input {
             width: 100%;
-            padding: 9px 40px 9px 14px;
-            border-radius: var(--radius-md);
+            padding: 9px 44px 9px 16px;
+            border-radius: var(--radius-full);
             border: 1px solid var(--border-default);
             background: var(--bg-glass);
             color: var(--text-primary);
             font-size: 14px;
-            font-family: var(--font-body);
             outline: none;
-            transition: all var(--duration-base);
+            transition: all 0.3s ease;
         }
-        .nav-url input::placeholder { color: var(--text-muted); }
-        .nav-url input:focus {
+        .search-bar input::placeholder { color: var(--text-muted); }
+        .search-bar input:focus {
             border-color: var(--accent);
             box-shadow: 0 0 0 3px var(--accent-glow);
         }
-        .nav-url-btn {
+        .search-bar .search-btn {
             position: absolute;
-            right: 4px;
+            right: 6px;
             top: 50%;
             transform: translateY(-50%);
-            width: 32px;
-            height: 32px;
-            border-radius: var(--radius-sm);
-            border: none;
             background: none;
-            color: var(--accent);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            border: none;
+            color: var(--text-muted);
             cursor: pointer;
-            transition: all var(--duration-fast);
+            padding: 4px 8px;
+            font-size: 22px;
+            transition: color 0.3s;
         }
-        .nav-url-btn:hover {
-            background: var(--accent-glow);
-        }
+        .search-bar .search-btn:hover { color: var(--accent); }
 
         .nav-actions {
             display: flex;
@@ -658,1296 +282,2000 @@
             gap: 4px;
             flex-shrink: 0;
         }
-
-        /* Floating Nav Toggle */
-        .nav-reveal {
-            position: fixed;
-            top: max(12px, env(safe-area-inset-top));
-            left: 50%;
-            transform: translateX(-50%) translateY(-60px);
-            z-index: 101;
-            padding: 8px 20px;
-            background: var(--bg-glass);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--border-default);
+        .nav-btn {
+            width: 40px;
+            height: 40px;
             border-radius: var(--radius-full);
+            border: none;
+            background: transparent;
             color: var(--text-secondary);
-            font-family: var(--font-body);
-            font-size: 13px;
-            font-weight: 500;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 6px;
-            opacity: 0;
-            transition: all var(--duration-base) var(--ease-spring);
-            box-shadow: var(--shadow-md);
+            justify-content: center;
+            font-size: 22px;
+            transition: all 0.2s;
         }
-        .nav-reveal.visible {
-            transform: translateX(-50%) translateY(0);
-            opacity: 1;
+        .nav-btn:hover {
+            background: var(--bg-glass);
+            color: var(--text-primary);
+        }
+        .nav-btn.profile-btn {
+            background: var(--bg-glass);
+            border: 1px solid var(--border-default);
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        .nav-btn.profile-btn:hover {
+            background: var(--bg-glass-hover);
+            border-color: var(--border-hover);
+        }
+        .nav-btn.profile-btn img {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            object-fit: cover;
         }
 
-        /* Main Content */
-        .app-content {
+        /* ========== MAIN CONTENT ========== */
+        .main-content {
+            flex: 1;
+            padding-top: calc(var(--nav-height) + env(safe-area-inset-top));
+            padding-bottom: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom));
+            overflow-y: auto;
+            padding-left: env(safe-area-inset-left);
+            padding-right: env(safe-area-inset-right);
+        }
+
+        /* ========== MOVIE GRID ========== */
+        .movies-container {
+            padding: 16px 16px 80px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .movies-container .section-title {
+            font-family: var(--font-display);
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .movies-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 16px;
+        }
+
+        .movie-card {
+            background: var(--bg-glass);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-subtle);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .movie-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--border-hover);
+            box-shadow: var(--shadow-md);
+        }
+        .movie-card .poster {
+            aspect-ratio: 2/3;
+            background: var(--bg-tertiary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            overflow: hidden;
+            position: relative;
+        }
+        .movie-card .poster img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .movie-card .poster .play-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .movie-card:hover .poster .play-overlay { opacity: 1; }
+        .movie-card .poster .play-overlay .material-icons-round {
+            font-size: 48px;
+            color: white;
+            background: var(--bg-glass);
+            border-radius: 50%;
+            padding: 12px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .movie-card .info {
+            padding: 12px 14px;
+        }
+        .movie-card .info h3 {
+            font-size: 14px;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .movie-card .info .meta {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+        .movie-card .info .meta .rating { color: #fbbf24; }
+        .movie-card .badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: var(--accent);
+            color: white;
+            font-size: 10px;
+            font-weight: 600;
+            padding: 2px 10px;
+            border-radius: var(--radius-full);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .movie-card .badge.series { background: var(--danger); }
+        .movie-card .badge.dorama { background: #8b5cf6; }
+
+        /* ========== FAB ========== */
+        .fab {
+            position: fixed;
+            bottom: calc(var(--bottom-nav-height) + 16px + env(safe-area-inset-bottom));
+            right: 16px;
+            z-index: 50;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            border: none;
+            color: white;
+            font-size: 28px;
+            cursor: pointer;
+            box-shadow: 0 4px 24px var(--accent-glow);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .fab:hover { transform: scale(1.05) rotate(90deg); }
+        .fab:active { transform: scale(0.95); }
+        .fab.hidden { 
+            opacity: 0;
+            transform: scale(0.8);
+            pointer-events: none;
+        }
+
+        /* ========== BOTTOM NAV ========== */
+        .bottom-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: var(--bottom-nav-height);
+            background: var(--bg-glass);
+            backdrop-filter: blur(40px) saturate(160%);
+            -webkit-backdrop-filter: blur(40px) saturate(160%);
+            border-top: 1px solid var(--border-subtle);
+            padding-bottom: env(safe-area-inset-bottom);
+            z-index: 100;
+            justify-content: space-around;
+            align-items: center;
+        }
+        .bottom-nav .nav-item {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            font-size: 10px;
+            font-family: var(--font-body);
+            cursor: pointer;
+            padding: 4px 12px;
+            transition: color 0.2s;
+        }
+        .bottom-nav .nav-item.active { color: var(--accent); }
+        .bottom-nav .nav-item .material-icons-round { font-size: 24px; }
+
+        /* ========== MODAL ========== */
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .modal-backdrop.open {
+            display: flex;
+            opacity: 1;
+        }
+        .modal-sheet {
+            width: 100%;
+            max-width: 560px;
+            max-height: 85vh;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+            border: 1px solid var(--border-default);
+            transform: translateY(100%);
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .modal-backdrop.open .modal-sheet {
+            transform: translateY(0);
+        }
+        .modal-handle {
+            width: 40px;
+            height: 4px;
+            background: var(--border-default);
+            border-radius: 4px;
+            margin: 8px auto;
+            flex-shrink: 0;
+        }
+        .modal-header {
+            padding: 8px 20px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+        .modal-header h2 {
+            font-family: var(--font-display);
+            font-size: 20px;
+            font-weight: 700;
+        }
+        .modal-header .close-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 24px;
+        }
+        .modal-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px 20px 24px;
+        }
+
+        /* ========== CREATE ROOM ========== */
+        .create-room-form {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .create-room-form .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .create-room-form .input-group label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .create-room-form input {
+            padding: 12px 16px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-default);
+            background: var(--bg-glass);
+            color: var(--text-primary);
+            font-size: 15px;
+            outline: none;
+            transition: all 0.3s;
+        }
+        .create-room-form input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+        .create-room-form .btn-primary {
+            padding: 14px;
+            border-radius: var(--radius-md);
+            border: none;
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 16px var(--accent-glow);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .create-room-form .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px var(--accent-glow);
+        }
+
+        /* ========== ROOM VIEW - FIXED ========== */
+        .room-view {
+            display: none;
+            height: 100%;
+            padding-top: calc(var(--nav-height) + env(safe-area-inset-top));
+        }
+        .room-view.active { display: flex; }
+
+        .room-layout {
             display: flex;
             flex: 1;
             height: 100%;
-            padding-top: calc(var(--nav-height) + env(safe-area-inset-top));
-            padding-bottom: env(safe-area-inset-bottom);
-            padding-left: env(safe-area-inset-left);
-            padding-right: env(safe-area-inset-right);
             gap: 0;
             overflow: hidden;
         }
 
-        /* Player Section */
-        .player-area {
+        /* Player wrapper */
+        .room-player-wrapper {
             flex: 1;
             display: flex;
-            flex-direction: column;
-            min-width: 0;
-            padding: var(--space-md);
-            gap: var(--space-md);
+            align-items: center;
+            justify-content: center;
+            background: #000;
+            position: relative;
+            min-height: 0;
+            overflow: hidden;
         }
 
-        .player-frame {
-            flex: 1;
-            background: #000;
-            border-radius: var(--radius-lg);
-            overflow: hidden;
+        .room-player-wrapper .player-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             position: relative;
-            box-shadow: var(--shadow-md);
-            min-height: var(--player-min-height);
         }
-        .player-frame iframe {
+
+        .room-player-wrapper .player-container iframe {
             width: 100%;
             height: 100%;
             border: none;
             display: block;
+            background: #000;
         }
 
-        .player-empty {
+        .room-player-wrapper .player-container .player-placeholder {
             position: absolute;
             inset: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: var(--space-md);
             color: var(--text-muted);
-            text-align: center;
-            padding: var(--space-xl);
+            gap: 12px;
+            background: #0a0a0f;
         }
-        .player-empty-icon {
-            width: 72px;
-            height: 72px;
-            background: var(--bg-glass);
-            border-radius: var(--radius-xl);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid var(--border-default);
-        }
-        .player-empty h3 {
-            font-family: var(--font-display);
-            font-size: 20px;
-            font-weight: 600;
-            color: var(--text-secondary);
-        }
-        .player-empty p {
-            font-size: 14px;
-            max-width: 280px;
+        .room-player-wrapper .player-container .player-placeholder .material-icons-round {
+            font-size: 64px;
+            opacity: 0.3;
         }
 
-        /* Chat Section */
-        .chat-area {
-            width: var(--chat-width);
-            flex-shrink: 0;
+        /* ========== CHAT SIDEBAR - FIXED ========== */
+        .chat-sidebar {
             display: flex;
             flex-direction: column;
             background: var(--bg-secondary);
-            border-left: 1px solid var(--border-subtle);
+            height: 100%;
             overflow: hidden;
+            flex-shrink: 0;
+            border-left: 1px solid var(--border-subtle);
+            width: 380px;
+            min-width: 320px;
+            max-width: 480px;
         }
 
-        .chat-header {
-            padding: var(--space-md) var(--space-lg);
+        .chat-sidebar .chat-header {
+            padding: 12px 16px;
             border-bottom: 1px solid var(--border-subtle);
             display: flex;
             align-items: center;
             justify-content: space-between;
             flex-shrink: 0;
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            min-height: 52px;
         }
-        .chat-header-info {
+        .chat-sidebar .chat-header .room-info {
             display: flex;
             align-items: center;
-            gap: var(--space-sm);
+            gap: 10px;
+            flex-wrap: wrap;
         }
-        .chat-header-avatar {
-            width: 40px;
-            height: 40px;
+        .chat-sidebar .chat-header .room-info .room-title {
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .chat-sidebar .chat-header .room-info .code {
+            background: var(--bg-glass);
+            padding: 2px 12px;
             border-radius: var(--radius-full);
-            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            font-family: var(--font-display);
+            font-weight: 600;
+            font-size: 12px;
+            letter-spacing: 1px;
+            border: 1px solid var(--border-default);
+        }
+        .chat-sidebar .chat-header .room-actions {
+            display: flex;
+            gap: 2px;
+        }
+        .chat-sidebar .chat-header .room-actions button {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 6px;
+            font-size: 20px;
+            border-radius: var(--radius-sm);
+            transition: all 0.2s;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
-            color: white;
-            font-weight: 600;
-            position: relative;
-            flex-shrink: 0;
         }
-        .chat-header-avatar::after {
-            content: '';
-            position: absolute;
-            bottom: 1px;
-            right: 1px;
-            width: 10px;
-            height: 10px;
-            background: var(--success);
-            border: 2px solid var(--bg-secondary);
-            border-radius: 50%;
-        }
-        .chat-header-text h3 {
-            font-size: 15px;
-            font-weight: 600;
-        }
-        .chat-header-text span {
-            font-size: 12px;
-            color: var(--text-muted);
+        .chat-sidebar .chat-header .room-actions button:hover {
+            background: var(--bg-glass);
+            color: var(--text-primary);
         }
 
-        .chat-messages {
+        .chat-sidebar .messages-container {
             flex: 1;
             overflow-y: auto;
-            padding: var(--space-md) var(--space-lg);
+            padding: 12px 16px;
             display: flex;
             flex-direction: column;
-            gap: var(--space-md);
+            gap: 6px;
+            transition: background 0.6s ease;
+            min-height: 0;
         }
 
-        .message {
+        .chat-sidebar .reply-indicator {
+            padding: 6px 16px;
+            background: var(--bg-glass);
+            border-left: 3px solid var(--accent);
+            display: none;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            flex-shrink: 0;
+            min-height: 36px;
+        }
+        .chat-sidebar .reply-indicator .cancel {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 18px;
+            margin-left: auto;
+        }
+
+        .chat-sidebar .chat-input-area {
+            padding: 8px 12px;
+            padding-bottom: max(8px, env(safe-area-inset-bottom));
+            border-top: 1px solid var(--border-subtle);
             display: flex;
-            gap: 10px;
-            max-width: 90%;
-            animation: msg-in 0.35s var(--ease-spring);
+            gap: 8px;
+            align-items: center;
+            flex-shrink: 0;
+            background: var(--bg-secondary);
+            min-height: 56px;
         }
-        @keyframes msg-in {
-            from { opacity: 0; transform: translateY(12px) scale(0.95); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
+        .chat-sidebar .chat-input-area input {
+            flex: 1;
+            padding: 10px 16px;
+            border-radius: var(--radius-full);
+            border: 1px solid var(--border-default);
+            background: var(--bg-glass);
+            color: var(--text-primary);
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s;
+            min-width: 0;
         }
-        .message.own {
+        .chat-sidebar .chat-input-area input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+        .chat-sidebar .chat-input-area .send-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+            transition: all 0.3s;
+            box-shadow: 0 2px 12px var(--accent-glow);
+        }
+        .chat-sidebar .chat-input-area .send-btn:hover { transform: scale(1.05); }
+        .chat-sidebar .chat-input-area .emoji-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 24px;
+            padding: 4px;
+            flex-shrink: 0;
+        }
+
+        /* ========== MESSAGES ========== */
+        .msg {
+            display: flex;
+            gap: 8px;
+            max-width: 92%;
+            animation: msgIn 0.3s ease;
+        }
+        @keyframes msgIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .msg.own {
             align-self: flex-end;
             flex-direction: row-reverse;
         }
-
-        
-        .message-avatar {
+        .msg .avatar {
             width: 32px;
             height: 32px;
-            border-radius: var(--radius-full);
+            border-radius: 50%;
             background: var(--bg-tertiary);
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 16px;
             flex-shrink: 0;
-            border: 1px solid var(--border-subtle);
             overflow: hidden;
+            border: 1px solid var(--border-subtle);
+            transition: all 0.2s;
         }
-        .message-avatar img {
+        .msg .avatar img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
-
-        .message-body {
+        .msg .bubble {
+            padding: 8px 14px;
+            border-radius: 16px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-subtle);
+            font-size: 14px;
+            line-height: 1.4;
+            word-break: break-word;
+            transition: all 0.2s;
+        }
+        .msg.own .bubble {
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            color: white;
+            border: none;
+            box-shadow: 0 2px 12px var(--accent-glow);
+        }
+        .msg .bubble .sender {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--accent-light);
+            margin-bottom: 2px;
+        }
+        .msg.own .bubble .sender {
+            color: rgba(255,255,255,0.8);
+        }
+        .msg .bubble .time {
+            font-size: 10px;
+            color: var(--text-muted);
+            margin-top: 4px;
+            display: block;
+        }
+        .msg.own .bubble .time {
+            color: rgba(255,255,255,0.5);
+        }
+        .msg .reply-preview {
+            font-size: 12px;
+            color: var(--text-muted);
+            border-left: 2px solid var(--accent);
+            padding-left: 8px;
+            margin-bottom: 4px;
+            background: var(--bg-glass);
+            border-radius: 4px;
+            padding: 4px 8px;
+        }
+        .msg.own .reply-preview {
+            color: rgba(255,255,255,0.6);
+            border-left-color: rgba(255,255,255,0.3);
+        }
+        .msg .actions {
             display: flex;
-            flex-direction: column;
+            gap: 2px;
+            margin-top: 4px;
+        }
+        .msg .actions button {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 14px;
+            padding: 2px 6px;
+            border-radius: var(--radius-sm);
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
             gap: 2px;
         }
-        .message-bubble {
-            padding: 10px 14px;
-            border-radius: 18px;
-            font-size: 14px;
-            line-height: 1.5;
-            word-wrap: break-word;
-            background: var(--bg-tertiary);
-            color: var(--text-primary);
-            border: 1px solid var(--border-subtle);
-        }
-        .message.own .message-bubble {
-            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
-            color: white;
-            border: none;
-            box-shadow: 0 4px 16px rgba(99, 102, 241, 0.3);
-        }
-        .message-meta {
-            font-size: 11px;
-            color: var(--text-muted);
-            padding: 0 4px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-        .message.own .message-meta {
-            justify-content: flex-end;
-        }
-
-        .chat-input {
-            padding: var(--space-md) var(--space-lg);
-            padding-bottom: max(var(--space-md), env(safe-area-inset-bottom));
-            border-top: 1px solid var(--border-subtle);
-            display: flex;
-            gap: var(--space-sm);
-            align-items: center;
-            flex-shrink: 0;
-            background: var(--bg-secondary);
-        }
-        .chat-input input {
-            flex: 1;
-            padding: 11px 16px;
-            border-radius: var(--radius-full);
-            border: 1px solid var(--border-default);
+        .msg .actions button:hover {
             background: var(--bg-glass);
             color: var(--text-primary);
-            font-size: 14px;
-            font-family: var(--font-body);
-            outline: none;
-            transition: all var(--duration-base);
         }
-        .chat-input input::placeholder { color: var(--text-muted); }
-        .chat-input input:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px var(--accent-glow);
+        .msg .actions .like-btn.liked {
+            color: var(--danger);
         }
-        .chat-input button {
-            width: 40px;
-            height: 40px;
-            border-radius: var(--radius-full);
-            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
-            border: none;
-            color: white;
+        .msg .actions .like-btn.liked .material-icons-round {
+            font-variation-settings: 'FILL' 1;
+        }
+
+        /* ========== USERS MODAL ========== */
+        .users-list-modal .user-item {
             display: flex;
             align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all var(--duration-base) var(--ease-spring);
-            flex-shrink: 0;
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
-        }
-        .chat-input button:hover {
-            transform: scale(1.08);
-            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
-        }
-        .chat-input button:active { transform: scale(0.95); }
-
-        /* Sidebar */
-        .sidebar-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.4);
-            backdrop-filter: blur(4px);
-            z-index: 200;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity var(--duration-base);
-        }
-        .sidebar-overlay.open {
-            opacity: 1;
-            pointer-events: all;
-        }
-
-        .sidebar {
-            position: fixed;
-            left: 0;
-            top: 0;
-            width: 320px;
-            max-width: 85vw;
-            height: 100%;
-            background: var(--bg-secondary);
-            border-right: 1px solid var(--border-subtle);
-            z-index: 201;
-            transform: translateX(-100%);
-            transition: transform var(--duration-slow) var(--ease-out);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-        .sidebar.open { transform: translateX(0); }
-
-        .sidebar-header {
-            padding: var(--space-lg);
-            padding-top: max(var(--space-lg), env(safe-area-inset-top));
+            gap: 12px;
+            padding: 10px 0;
             border-bottom: 1px solid var(--border-subtle);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-shrink: 0;
         }
-        .sidebar-header h2 {
-            font-family: var(--font-display);
-            font-size: 22px;
-            font-weight: 700;
-        }
-
-        .sidebar-body {
-            flex: 1;
-            overflow-y: auto;
-            padding: var(--space-lg);
-            display: flex;
-            flex-direction: column;
-            gap: var(--space-xl);
-        }
-
-        .room-card {
-            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
-            border-radius: var(--radius-lg);
-            padding: var(--space-lg);
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-            box-shadow: var(--shadow-glow);
-        }
-        .room-card::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.15), transparent 60%);
-        }
-        .room-card-label {
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            opacity: 0.7;
-            margin-bottom: var(--space-sm);
-            position: relative;
-        }
-        .room-card-code {
-            font-family: var(--font-display);
-            font-size: 32px;
-            font-weight: 700;
-            letter-spacing: 3px;
-            position: relative;
-        }
-        .room-card-btn {
-            margin-top: var(--space-md);
-            background: rgba(255,255,255,0.15);
-            border: 1px solid rgba(255,255,255,0.2);
-            color: white;
-            padding: 10px var(--space-md);
-            border-radius: var(--radius-md);
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all var(--duration-fast);
-            position: relative;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .room-card-btn:hover {
-            background: rgba(255,255,255,0.25);
-        }
-
-        .users-list h4 {
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--text-muted);
-            margin-bottom: var(--space-md);
-        }
-        .user-row {
-            display: flex;
-            align-items: center;
-            gap: var(--space-sm);
-            padding: 10px;
-            border-radius: var(--radius-md);
-            transition: background var(--duration-fast);
-        }
-        .user-row:hover {
-            background: var(--bg-glass);
-        }
-        .user-row-avatar {
+        .users-list-modal .user-item .avatar {
             width: 40px;
             height: 40px;
-            border-radius: var(--radius-full);
-            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            border-radius: 50%;
+            background: var(--bg-tertiary);
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 18px;
-            color: white;
-            font-weight: 600;
-            position: relative;
-            flex-shrink: 0;
             overflow: hidden;
         }
-        .user-row-avatar img {
+        .users-list-modal .user-item .avatar img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
-        .user-row-avatar .status {
-            position: absolute;
-            bottom: 1px;
-            right: 1px;
-            width: 10px;
-            height: 10px;
-            background: var(--success);
-            border: 2px solid var(--bg-secondary);
-            border-radius: 50%;
-        }
-        .user-row-info {
-            flex: 1;
-            min-width: 0;
-        }
-        .user-row-info .name {
-            font-weight: 600;
-            font-size: 14px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .user-row-info .role {
-            font-size: 12px;
-            color: var(--text-muted);
-        }
-        .user-row-badge {
+        .users-list-modal .user-item .info { flex: 1; }
+        .users-list-modal .user-item .info .name { font-weight: 600; }
+        .users-list-modal .user-item .info .role { font-size: 12px; color: var(--text-muted); }
+        .users-list-modal .user-item .host-badge {
             font-size: 10px;
             font-weight: 700;
-            background: var(--accent-glow);
             color: var(--accent-light);
-            padding: 3px 8px;
+            background: var(--accent-glow);
+            padding: 2px 10px;
             border-radius: var(--radius-full);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+        }
+        .users-list-modal .copy-link-btn {
+            width: 100%;
+            padding: 12px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-default);
+            background: var(--bg-glass);
+            color: var(--text-primary);
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s;
+            margin-bottom: 16px;
+        }
+        .users-list-modal .copy-link-btn:hover {
+            background: var(--bg-glass-hover);
+            border-color: var(--border-hover);
         }
 
-        /* Toast */
+        /* ========== SETTINGS ========== */
+        .settings-section {
+            margin-bottom: 20px;
+        }
+        .settings-section .label {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            display: block;
+        }
+        .settings-section .theme-options {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .settings-section .theme-options button {
+            padding: 8px 16px;
+            border-radius: var(--radius-full);
+            border: 2px solid var(--border-default);
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 13px;
+            font-family: var(--font-body);
+            transition: all 0.3s;
+        }
+        .settings-section .theme-options button.active {
+            border-color: var(--accent);
+            color: var(--text-primary);
+            background: var(--accent-glow);
+        }
+        .settings-section .theme-options button:hover {
+            border-color: var(--border-hover);
+        }
+        .settings-section .toggle-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 0;
+        }
+        .settings-section .toggle-row .toggle {
+            width: 44px;
+            height: 24px;
+            border-radius: 12px;
+            background: var(--border-default);
+            cursor: pointer;
+            position: relative;
+            transition: background 0.3s;
+        }
+        .settings-section .toggle-row .toggle.active {
+            background: var(--accent);
+        }
+        .settings-section .toggle-row .toggle::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: white;
+            transition: transform 0.3s;
+        }
+        .settings-section .toggle-row .toggle.active::after {
+            transform: translateX(20px);
+        }
+        .settings-section .lang-options {
+            display: flex;
+            gap: 8px;
+        }
+        .settings-section .lang-options button {
+            padding: 6px 16px;
+            border-radius: var(--radius-full);
+            border: 1px solid var(--border-default);
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.3s;
+        }
+        .settings-section .lang-options button.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        /* ========== PROFILE ========== */
+        .profile-avatar-edit {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        .profile-avatar-edit .current {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: var(--bg-tertiary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            border: 2px solid var(--border-default);
+            overflow: hidden;
+        }
+        .profile-avatar-edit .current img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .profile-avatar-edit .upload-btn {
+            padding: 10px 20px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-default);
+            background: var(--bg-glass);
+            color: var(--text-primary);
+            cursor: pointer;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .profile-avatar-edit .upload-btn:hover {
+            background: var(--bg-glass-hover);
+        }
+        .profile-avatar-edit input[type="file"] { display: none; }
+
+        .profile-name-input {
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-default);
+            background: var(--bg-glass);
+            color: var(--text-primary);
+            font-size: 15px;
+            outline: none;
+            transition: all 0.3s;
+        }
+        .profile-name-input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+
+        .social-links {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin: 12px 0;
+        }
+        .social-links a {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-default);
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.3s;
+            font-size: 13px;
+        }
+        .social-links a:hover {
+            background: var(--bg-glass);
+            color: var(--text-primary);
+            border-color: var(--border-hover);
+        }
+        .social-links a .material-icons-round { font-size: 20px; }
+
+        .feedback-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-default);
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.3s;
+            font-size: 13px;
+        }
+        .feedback-link:hover {
+            background: var(--bg-glass);
+            color: var(--text-primary);
+            border-color: var(--border-hover);
+        }
+
+        /* ========== TOAST ========== */
         .toast-container {
             position: fixed;
-            bottom: max(24px, env(safe-area-inset-bottom));
+            bottom: 80px;
             left: 50%;
             transform: translateX(-50%);
-            z-index: 5000;
+            z-index: 9999;
             display: flex;
             flex-direction: column;
-            gap: var(--space-sm);
+            align-items: center;
+            gap: 8px;
             pointer-events: none;
-            width: max-content;
             max-width: 90vw;
         }
         .toast {
+            padding: 12px 20px;
+            border-radius: var(--radius-md);
             background: var(--bg-elevated);
             border: 1px solid var(--border-default);
-            padding: 12px var(--space-lg);
-            border-radius: var(--radius-md);
+            color: var(--text-primary);
             font-size: 14px;
             font-weight: 500;
-            color: var(--text-primary);
             box-shadow: var(--shadow-lg);
-            animation: toast-in 0.4s var(--ease-spring);
+            animation: toastIn 0.3s ease;
             display: flex;
             align-items: center;
             gap: 8px;
             pointer-events: all;
-            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
-        @keyframes toast-in {
-            from { opacity: 0; transform: translateY(20px) scale(0.9); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
+        .toast:hover {
+            opacity: 0.8;
         }
         .toast.success { border-color: var(--success); }
         .toast.error { border-color: var(--danger); }
-
-        /* ========== RESPONSIVE ========== */
-        /* Tablet */
-        @media (max-width: 1024px) {
-            .chat-area { width: 340px; }
+        @keyframes toastIn {
+            from { opacity: 0; transform: translateY(10px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
-        /* Mobile Landscape */
-        @media (max-width: 768px) and (orientation: landscape) {
-            .app-content {
-                flex-direction: row;
-            }
-            .player-area {
-                padding: var(--space-sm);
-            }
-            .chat-area {
-                width: 280px;
-            }
+        /* ========== EMOJI PICKER ========== */
+        #emoji-picker {
+            display: none;
+            position: absolute;
+            bottom: 70px;
+            left: 12px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-lg);
+            padding: 12px;
+            max-width: 280px;
+            z-index: 200;
+            box-shadow: var(--shadow-lg);
+        }
+        #emoji-picker .emoji-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+            font-size: 24px;
+        }
+        #emoji-picker .emoji-grid span {
+            cursor: pointer;
+            text-align: center;
+            padding: 4px;
+            border-radius: var(--radius-sm);
+            transition: background 0.2s;
+        }
+        #emoji-picker .emoji-grid span:hover {
+            background: var(--bg-glass);
         }
 
-        /* Mobile Portrait */
-        @media (max-width: 768px) and (orientation: portrait) {
-            :root {
-                --nav-height: 52px;
-            }
-            
-            .app-content {
-                flex-direction: column;
-                padding-top: calc(var(--nav-height) + env(safe-area-inset-top));
-            }
-            
-            .player-area {
-                flex: none;
-                height: 38vh;
-                min-height: 200px;
-                padding: var(--space-sm);
-            }
-            
-            .chat-area {
-                width: 100%;
+        /* ========== RESPONSIVE - FIXED ========== */
+        /* Desktop: side-by-side */
+        @media (min-width: 769px) {
+            .bottom-nav { display: none !important; }
+            .room-player-wrapper {
                 flex: 1;
-                border-left: none;
-                border-top: 1px solid var(--border-subtle);
-            }
-            
-            .nav-logo span { display: none; }
-            .nav-url { max-width: none; }
-            
-            .sidebar { width: 100%; max-width: 100%; }
-            
-            .auth-brand h1 { font-size: 28px; }
-            .auth-logo { width: 72px; height: 72px; }
-        }
-
-        /* Small phones */
-        @media (max-width: 380px) {
-            .auth-form .glass {
-                padding: var(--space-md);
-            }
-            .room-card-code {
-                font-size: 26px;
+                height: 100%;
             }
         }
 
-        /* iPhone notch handling */
+        /* Mobile: chat below player - FIXED */
+        @media (max-width: 768px) {
+    .bottom-nav { display: flex; }
+    .top-nav .logo .logo-text { display: none; }
+    .search-bar { max-width: none; }
+    .movies-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; }
+    .modal-sheet { max-width: 100%; border-radius: var(--radius-xl) var(--radius-xl) 0 0; }
+    
+    .room-layout {
+        flex-direction: column;
+        height: 100%;
+    }
+    
+    /* Видео занимает 30% высоты экрана (или 40% - выберите нужное) */
+    .room-player-wrapper {
+        flex: 0 0 30vh;  /* Измените на 40vh если хотите 40/60 split */
+        min-height: 180px;
+        max-height: 35vh;
+        width: 100%;
+        background: #000;
+    }
+    
+    .room-player-wrapper .player-container {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+    }
+    
+    /* Убираем черные полосы - видео заполняет весь контейнер */
+    .room-player-wrapper .player-container iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+        display: block;
+        background: #000;
+        object-fit: cover;  /* Заполняет без черных полос (может обрезать края) */
+        /* Альтернатива: object-fit: contain; но будут черные полосы */
+    }
+    
+    /* Альтернативный вариант с сохранением пропорций 16:9 */
+    .room-player-wrapper .player-container.has-aspect {
+        aspect-ratio: 16/9;
+        height: auto;
+    }
+    
+    .chat-sidebar {
+        width: 100%;
+        min-width: unset;
+        max-width: unset;
+        flex: 1;  /* Занимает оставшееся пространство (70%) */
+        min-height: 0;
+        height: auto;
+        border-left: none;
+        border-top: 1px solid var(--border-subtle);
+    }
+    
+    .chat-sidebar .messages-container {
+        flex: 1;
+        min-height: 100px;
+        max-height: none;
+    }
+    
+    .chat-sidebar .chat-input-area {
+        flex-shrink: 0;
+        padding-bottom: max(8px, env(safe-area-inset-bottom));
+    }
+    
+    .chat-sidebar .chat-input-area input {
+        font-size: 16px; /* Prevent iOS zoom */
+    }
+    
+    .chat-sidebar .messages-container .msg {
+        max-width: 95%;
+    }
+}
+        @media (max-width: 480px) {
+            .movies-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; }
+            .movie-card .info h3 { font-size: 12px; }
+            .modal-sheet { max-height: 92vh; }
+            .settings-section .theme-options button { padding: 6px 12px; font-size: 12px; }
+            .social-links { grid-template-columns: 1fr; }
+            .room-player-wrapper {
+    flex: 0 0 30vh;
+    min-height: 180px;
+    max-height: 35vh;
+}
+            .chat-sidebar .chat-header .room-title { font-size: 13px; }
+            .chat-sidebar .chat-header .code { font-size: 11px; }
+        }
+
+        @media (min-width: 1200px) {
+            .movies-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+            .chat-sidebar { width: 420px; min-width: 380px; }
+        }
+
+        @media (min-width: 1600px) {
+            .chat-sidebar { width: 480px; min-width: 420px; }
+        }
+
         @supports (padding-top: env(safe-area-inset-top)) {
-            .app-nav {
-                padding-left: max(var(--space-md), env(safe-area-inset-left));
-                padding-right: max(var(--space-md), env(safe-area-inset-right));
-            }
-            .player-area {
-                padding-left: max(var(--space-md), env(safe-area-inset-left));
-                padding-right: max(var(--space-md), env(safe-area-inset-right));
-            }
-            .chat-header, .chat-messages, .chat-input {
-                padding-left: max(var(--space-lg), env(safe-area-inset-left));
-                padding-right: max(var(--space-lg), env(safe-area-inset-right));
-            }
+            .top-nav { padding-top: env(safe-area-inset-top); }
+            .bottom-nav { padding-bottom: env(safe-area-inset-bottom); }
+            .main-content { padding-top: calc(var(--nav-height) + env(safe-area-inset-top)); }
+            .room-view { padding-top: calc(var(--nav-height) + env(safe-area-inset-top)); }
+            .chat-sidebar .chat-input-area { padding-bottom: max(8px, env(safe-area-inset-bottom)); }
         }
-/* стиль ответов */
-
-/* Сообщение */
-.message {
-    position: relative;
-}
-
-/* Блок прикреплённого ответа над полем ввода (как в Telegram) */
-.reply-attachment {
-    margin: 0 var(--space-lg) var(--space-sm) var(--space-lg);
-    padding: 10px 12px;
-    background: var(--bg-glass);
-    backdrop-filter: blur(20px);
-    border-left: 3px solid var(--accent);
-    border-radius: var(--radius-md);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    animation: slideDown 0.25s var(--ease-spring);
-}
-
-@keyframes slideDown {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.reply-attachment-content {
-    flex: 1;
-    min-width: 0;
-}
-
-.reply-attachment-label {
-    font-size: 11px;
-    color: var(--accent-light);
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 2px;
-}
-
-.reply-attachment-text {
-    font-size: 13px;
-    color: var(--text-secondary);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.reply-attachment-text strong {
-    color: var(--accent-light);
-    font-weight: 600;
-}
-
-.reply-attachment-cancel {
-    background: var(--bg-glass-hover);
-    border: none;
-    border-radius: var(--radius-full);
-    width: 28px;
-    height: 28px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    color: var(--text-muted);
-    transition: all var(--duration-fast);
-    flex-shrink: 0;
-}
-
-.reply-attachment-cancel:hover {
-    background: var(--bg-glass-active);
-    color: var(--text-primary);
-}
-
-/* Блок с ответом ВНУТРИ сообщения (как в Telegram) */
-.message-reply-preview {
-    background: rgba(99, 102, 241, 0.1);
-    border-left: 3px solid var(--accent);
-    border-radius: var(--radius-sm);
-    padding: 8px 12px;
-    margin-bottom: 8px;
-    font-size: 12px;
-}
-
-.message.own .message-reply-preview {
-    background: rgba(255, 255, 255, 0.1);
-    border-left-color: rgba(255, 255, 255, 0.5);
-}
-
-.reply-preview-sender {
-    color: var(--accent-light);
-    font-weight: 600;
-    font-size: 11px;
-    margin-bottom: 2px;
-}
-
-.message.own .reply-preview-sender {
-    color: rgba(255, 255, 255, 0.8);
-}
-
-.reply-preview-text {
-    color: var(--text-secondary);
-    font-size: 12px;
-    word-break: break-word;
-}
-
-.message.own .reply-preview-text {
-    color: rgba(255, 255, 255, 0.7);
-}
-
-/* Кнопки действий (ответить, лайк) */
-.message-actions {
-    display: flex;
-    gap: 8px;
-    margin-top: 4px;
-    opacity: 0;
-    transition: opacity var(--duration-fast);
-}
-
-.message:hover .message-actions {
-    opacity: 1;
-}
-
-.message-action-btn {
-    background: transparent;
-    border: none;
-    padding: 4px 8px;
-    border-radius: var(--radius-full);
-    font-size: 11px;
-    color: var(--text-muted);
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    transition: all var(--duration-fast);
-}
-
-.message-action-btn:hover {
-    background: var(--bg-glass);
-    color: var(--accent-light);
-}
-
-/* Кнопка лайка */
-.like-btn {
-    background: transparent;
-    border: none;
-    padding: 4px 8px;
-    border-radius: var(--radius-full);
-    font-size: 12px;
-    color: var(--text-muted);
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    transition: all var(--duration-fast);
-    position: relative;
-}
-
-.like-btn:hover {
-    background: var(--bg-glass);
-}
-
-/* Пустое сердечко (обычное состояние) */
-.like-btn i {
-    transition: all 0.2s var(--ease-spring);
-}
-
-/* Залитое красное сердечко при лайке */
-.like-btn.liked {
-    color: #ef4444;
-}
-
-.like-btn.liked i {
-    fill: #ef4444;  /* Заливка сердечка красным */
-    stroke: #ef4444; /* Убираем обводку */
-}
-
-.like-btn.liked:hover {
-    background: rgba(239, 68, 68, 0.1);
-}
-
-/* Анимация при нажатии */
-.like-btn:active {
-    transform: scale(0.9);
-}
-
-.like-btn.liked:active {
-    transform: scale(0.9);
-}
-
-/* Индикатор лайков */
-.likes-count {
-    font-size: 11px;
-    color: var(--text-muted);
-    margin-left: 4px;
-}
-
-.like-btn.liked .likes-count {
-    color: #ef4444;
-}
-
-.like-btn.liked:hover {
-    background: rgba(239, 68, 68, 0.1);
-}
-
-/* Индикатор лайков */
-.likes-count {
-    font-size: 11px;
-    color: var(--text-muted);
-    margin-left: 4px;
-}
-
-/* Подсветка поля ввода при ответе */
-.reply-mode-active .chat-input input {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px var(--accent-glow);
-}
     </style>
 </head>
 <body>
-    <!-- Задний фон -->
-    <div class="ambient-bg">
-        <div class="ambient-orb ambient-orb-1"></div>
-        <div class="ambient-orb ambient-orb-2"></div>
-    </div>
 
-    <!-- Контейнер для тостов -->
-    <div class="toast-container" id="toast-container"></div>
+<!-- ========== LOADING ========== -->
+<div id="loading-screen">
+    <div class="loader-ring"></div>
+    <div class="loader-text">QuorStream</div>
+</div>
 
-    <!-- Окно настроек (модальное) -->
-    <div class="modal-backdrop" id="settings-modal" onclick="closeSettingsBackdrop(event)">
-        <div class="modal-sheet" onclick="event.stopPropagation()">
-            <div class="modal-header">
-                <h2>Настройки</h2>
-                <button class="btn-icon" onclick="closeSettings()">
-                    <i data-lucide="x" style="width:18px; height:18px;"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="setting-section">
-                    <div class="setting-label">Тема оформления</div>
-                    <div class="theme-switcher">
-                        <button class="theme-option active" onclick="setTheme('dark')" id="theme-dark">
-                            <i data-lucide="moon" style="width:16px; height:16px;"></i>
-                            <span>Тёмная</span>
-                        </button>
-                        <button class="theme-option" onclick="setTheme('light')" id="theme-light">
-                            <i data-lucide="sun" style="width:16px; height:16px;"></i>
-                            <span>Светлая</span>
-                        </button>
+<!-- ========== APP ========== -->
+<div id="app">
+    <!-- TOP NAV -->
+    <nav class="top-nav">
+        <a class="logo" href="#" onclick="goHome()">
+            <img src="https://avatars.dzeninfra.ru/get-zen_brief/271828/pub_6a11d9e18b669d5195063fe5_6a11da11eabfd201e439ee03/scale_1200" alt="QuorStream">
+            <span class="logo-text">QuorStream</span>
+        </a>
+        <div class="search-bar">
+            <input type="text" id="search-input" placeholder="Введите код комнаты..." onkeypress="if(event.key==='Enter') joinByCode()">
+            <button class="search-btn material-icons-round" onclick="joinByCode()">search</button>
+        </div>
+        <div class="nav-actions">
+            <button class="nav-btn material-icons-round" onclick="openSettings()" title="Настройки">settings</button>
+            <button class="nav-btn profile-btn" id="profile-btn" onclick="openProfile()">👤</button>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content" id="main-content">
+        <!-- MOVIES -->
+        <div class="movies-container" id="movies-container">
+            <div class="section-title">🎬 Все фильмы и сериалы</div>
+            <div class="movies-grid" id="movies-grid"></div>
+        </div>
+
+        <!-- ROOM VIEW -->
+        <div class="room-view" id="room-view">
+            <div class="room-layout" id="room-layout">
+                <!-- Player -->
+                <div class="room-player-wrapper" id="room-player-wrapper">
+                    <div class="player-container" id="player-container">
+                        <div class="player-placeholder" id="player-placeholder">
+                            <span class="material-icons-round">play_circle</span>
+                            <span>Введите ссылку или выберите фильм</span>
+                        </div>
+                        <iframe id="video-frame" src="" allow="autoplay; fullscreen" style="display:none; width:100%; height:100%;"></iframe>
                     </div>
                 </div>
 
-                <div class="setting-section">
-                    <div class="setting-label">Имя профиля</div>
-                    <input type="text" class="input" id="settings-name" placeholder="Введите имя" maxlength="20">
+                <!-- Chat Sidebar -->
+                <div class="chat-sidebar" id="chat-sidebar">
+                    <div class="chat-header">
+                        <div class="room-info">
+                            <span class="room-title">💬 Чат</span>
+                            <span class="code" id="room-code-display">----</span>
+                        </div>
+                        <div class="room-actions">
+                            <button class="material-icons-round" onclick="openUsersList()" title="Участники">people</button>
+                            <button class="material-icons-round" onclick="leaveRoom()" title="Выйти">exit_to_app</button>
+                        </div>
+                    </div>
+                    <div class="reply-indicator" id="reply-indicator">
+                        <span id="reply-text">Ответ...</span>
+                        <button class="cancel material-icons-round" onclick="cancelReply()">close</button>
+                    </div>
+                    <div class="messages-container" id="messages-container"></div>
+                    <div class="chat-input-area">
+                        <button class="emoji-btn material-icons-round" onclick="toggleEmojiPicker()">sentiment_satisfied</button>
+                        <input type="text" id="chat-input" placeholder="Написать сообщение..." onkeypress="if(event.key==='Enter') sendMessage()">
+                        <button class="send-btn material-icons-round" onclick="sendMessage()">send</button>
+                    </div>
                 </div>
-
-                <div class="setting-section">
-                    <div class="setting-label">Аватар(Иконка профиля)</div>
-                    <div class="avatar-grid" id="avatar-grid"></div>
-                </div>
-
-                <button class="btn btn-primary" onclick="saveSettings()" style="width:100%;">
-                    <i data-lucide="check" style="width:18px; height:18px;"></i>
-                    Сохранить изменения
-                </button>
             </div>
         </div>
     </div>
 
-    <!-- Боковая панель -->
-    <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
-
-    <!-- Боковая панель (сбоку при создание комнаты) -->
-    <div class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <h2>Ваша комната</h2>
-            <button class="btn-icon" onclick="toggleSidebar()">
-                <i data-lucide="x" style="width:18px; height:18px;"></i>
-            </button>
-        </div>
-        <div class="sidebar-body">
-            <div class="room-card">
-                <div class="room-card-label">Код комнаты (поделитесь им или ссылкой)</div>
-                <div class="room-card-code" id="room-code-display">----</div>
-                <button class="room-card-btn" onclick="copyInviteLink()">
-                    <i data-lucide="copy" style="width:14px; height:14px;"></i>
-                    Копировать ссылку
-                </button>
-            </div>
-
-            <div class="users-list">
-                <h4>Смотрящие с вами — <span id="users-count">0</span></h4>
-                <div id="users-list"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Экран аутентификации -->
-    <div class="screen active" id="screen-auth">
-        <div class="auth-wrapper">
-            <div class="auth-brand">
-                <div class="auth-logo">
-                    <i data-lucide="play" style="width:36px; height:36px;"></i>
-                </div>
-                <h1>QuorStream</h1>
-                <p>Смотрите видео вместе с друзьями в реальном времени</p>
-            </div>
-
-            <div class="auth-form">
-                <div class="glass">
-                    <input type="text" class="input" id="name-in" placeholder="Ваше имя" maxlength="20">
-                    <input type="text" class="input" id="code-in" placeholder="Код комнаты (если подключаетесь)">
-                    
-                    <button class="btn btn-primary" onclick="connect('create')" style="width:100%;">
-                        <i data-lucide="plus-circle" style="width:18px; height:18px;"></i>
-                        Создать комнату
-                    </button>
-                    
-                    <div class="auth-divider">или</div>
-                    
-                    <button class="btn btn-secondary" onclick="connect('join')" style="width:100%;">
-                        <i data-lucide="log-in" style="width:18px; height:18px;"></i>
-                        Присоединиться
-                    </button>
-                </div>
-            </div>
-
-            <div class="auth-footer">
-                <button class="btn btn-ghost" onclick="openSettings()">
-                    <i data-lucide="settings" style="width:16px; height:16px;"></i>
-                    Настройки
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Экран приложения -->
-    <div class="screen" id="screen-app">
-        <!-- Плавающий переключатель навигации -->
-        <button class="nav-reveal" id="nav-reveal" onclick="toggleNav()">
-            <i data-lucide="chevron-down" style="width:16px; height:16px;"></i>
-            Показать панель
+    <!-- BOTTOM NAV -->
+    <div class="bottom-nav">
+        <button class="nav-item active" onclick="goHome()">
+            <span class="material-icons-round">home</span>
+            <span>Главная</span>
         </button>
+        <button class="nav-item" onclick="openCreateRoom()">
+            <span class="material-icons-round">add_circle</span>
+            <span>Создать</span>
+        </button>
+        <button class="nav-item" onclick="openProfile()">
+            <span class="material-icons-round">person</span>
+            <span>Профиль</span>
+        </button>
+    </div>
 
-        <!-- Верхняя навигация -->
-        <div class="app-nav" id="app-nav">
-            <button class="btn-icon" onclick="toggleSidebar()">
-                <i data-lucide="menu" style="width:18px; height:18px;"></i>
-            </button>
+    <!-- FAB -->
+    <button class="fab material-icons-round" id="fab-btn" onclick="openCreateRoom()">add</button>
+</div>
 
-            <div class="nav-logo">
-                <div class="nav-logo-icon">
-                    <i data-lucide="play" style="width:16px; height:16px;"></i>
+<!-- ========== CREATE ROOM MODAL ========== -->
+<div class="modal-backdrop" id="create-modal" onclick="closeCreateRoom(event)">
+    <div class="modal-sheet" onclick="event.stopPropagation()">
+        <div class="modal-handle"></div>
+        <div class="modal-header">
+            <h2>📺 Создать комнату</h2>
+            <button class="close-btn material-icons-round" onclick="closeCreateRoom()">close</button>
+        </div>
+        <div class="modal-body">
+            <div class="create-room-form">
+                <div class="input-group">
+                    <label>Ссылка на видео (YouTube / VK)</label>
+                    <input type="text" id="create-url" placeholder="https://youtube.com/watch?v=...">
                 </div>
-                <span>QuorStream</span>
-            </div>
-
-            <div class="nav-url">
-                <input type="text" id="url-input" placeholder="Вствь ссылку...">
-                <button class="nav-url-btn" onclick="setVideo()">
-                    <i data-lucide="play" style="width:16px; height:16px;"></i>
-                </button>
-            </div>
-
-            <div class="nav-actions">
-                <button class="btn-icon" onclick="openSettings()" title="Настройки">
-                    <i data-lucide="settings" style="width:18px; height:18px;"></i>
-                </button>
-                <button class="btn-icon" onclick="toggleNav()" title="Скрыть панель">
-                    <i data-lucide="chevron-up" style="width:18px; height:18px;"></i>
-                </button>
-                <button class="btn-icon" onclick="location.reload()" title="Выйти" style="color:var(--danger);">
-                    <i data-lucide="log-out" style="width:18px; height:18px;"></i>
+                <div class="input-group">
+                    <label>Название комнаты</label>
+                    <input type="text" id="create-name" placeholder="Вечерний просмотр">
+                </div>
+                <button class="btn-primary" onclick="createRoom()">
+                    <span class="material-icons-round" style="font-size:18px;">add</span>
+                    Создать комнату
                 </button>
             </div>
         </div>
-
-        <!-- Основное содержание -->
-        <div class="app-content">
-            <!-- Проигрыватель -->
-            <div class="player-area">
-                <div class="player-frame" id="player-frame">
-                    <iframe id="video-frame" src="" allow="autoplay; fullscreen" style="display:none;"></iframe>
-                   <div class="player-empty" id="player-empty">
-    <div class="player-empty-icon">
-        <img src="https://avatars.dzeninfra.ru/get-zen_brief/271828/pub_6a11d9e18b669d5195063fe5_6a11da11eabfd201e439ee03/scale_1200" 
-             alt="Нет видео" 
-             style="width: 120px; height: 120px; border-radius: 12px; object-fit: cover; margin-bottom: 10px;">
-    </div>
-    <div>
-        <h3>Нет видеоролика</h3>
-        <p>Вставьте ссылку на YouTube или VK в панель сверху, чтобы начать совместный просмотр</p>
     </div>
 </div>
+
+<!-- ========== USERS MODAL ========== -->
+<div class="modal-backdrop" id="users-modal" onclick="closeUsersModal(event)">
+    <div class="modal-sheet users-list-modal" onclick="event.stopPropagation()">
+        <div class="modal-handle"></div>
+        <div class="modal-header">
+            <h2>👥 Участники (<span id="users-count">0</span>)</h2>
+            <button class="close-btn material-icons-round" onclick="closeUsersModal()">close</button>
+        </div>
+        <div class="modal-body">
+            <button class="copy-link-btn" onclick="copyInviteLink()">
+                <span class="material-icons-round">link</span>
+                Скопировать ссылку приглашения
+            </button>
+            <div id="users-list"></div>
+        </div>
+    </div>
+</div>
+
+<!-- ========== SETTINGS MODAL ========== -->
+<div class="modal-backdrop" id="settings-modal" onclick="closeSettings(event)">
+    <div class="modal-sheet" onclick="event.stopPropagation()" style="max-width:500px;">
+        <div class="modal-handle"></div>
+        <div class="modal-header">
+            <h2>⚙️ Настройки</h2>
+            <button class="close-btn material-icons-round" onclick="closeSettings()">close</button>
+        </div>
+        <div class="modal-body">
+            <div class="settings-section">
+                <span class="label">Тема оформления</span>
+                <div class="theme-options">
+                    <button data-theme="dark" class="active" onclick="setTheme('dark')">🌙 Тёмная</button>
+                    <button data-theme="light" onclick="setTheme('light')">☀️ Светлая</button>
+                    <button data-theme="ocean" onclick="setTheme('ocean')">🌊 Морская</button>
+                    <button data-theme="purple" onclick="setTheme('purple')">💜 Фиолетовая</button>
                 </div>
             </div>
-
-            <!-- Чат -->
-            <div class="chat-area">
-                <div class="chat-header">
-                    <div class="chat-header-info">
-                        <div class="chat-header-avatar" id="chat-header-avatar">
-                            <i data-lucide="users" style="width:20px; height:20px;"></i>
-                        </div>
-                        <div class="chat-header-text">
-                            <h3 class="icon-message-circle-check">Внизу чат команты</h3>
-                            <span id="chat-status">Приятного просмотра!</span>
-                        </div>
-                    </div>
-                    <button class="btn-icon" style="width:32px; height:32px;" onclick="clearChat()" title="Очистить чат">
-                        <i data-lucide="trash-2" style="width:14px; height:14px;"></i>
-                    </button>
+            <div class="settings-section">
+                <span class="label">Язык</span>
+                <div class="lang-options">
+                    <button data-lang="ru" class="active" onclick="setLang('ru')">🇷🇺 Русский</button>
+                    <button data-lang="en" onclick="setLang('en')">🇬🇧 English</button>
                 </div>
-
-                <div class="chat-messages" id="chat-messages"></div>
-
-                <div class="chat-input">
-                    <input type="text" id="chat-msg" placeholder="Написать сообщение..." maxlength="500">
-                    <button onclick="sendChat()">
-                        <i data-lucide="send" style="width:18px; height:18px;"></i>
-                    </button>
+            </div>
+            <div class="settings-section">
+                <span class="label">Конфиденциальность</span>
+                <div class="toggle-row">
+                    <span>Скрыть местоположение</span>
+                    <div class="toggle" id="location-toggle" onclick="toggleLocation()"></div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <script>
-        // ========== STATE ==========
-        const state = {
-            ws: null,
-            isHost: false,
-            myId: null,
-            roomCode: '',
-            profile: {
-                name: '',
-                avatar: '👤',
-                theme: 'dark'
-            }
-        };
-
-        const AVATARS = [
-            { emoji: '👤', name: 'Пользователь' },
-            { emoji: '🎮', name: 'Геймер' },
-            { emoji: '🎵', name: 'Меломан' },
-            { emoji: '🎬', name: 'Киноман' },
-            { emoji: '🚀', name: 'Космонавт' },
-            { emoji: '🔥', name: 'Огонь' },
-            { emoji: '💎', name: 'Алмаз' },
-            { emoji: '🌟', name: 'Звезда' },
-            { emoji: '🎨', name: 'Художник' },
-            { emoji: '⚡', name: 'Энергия' },
-            { emoji: '🦁', name: 'Лев' },
-            { emoji: '🐱', name: 'Кот' },
-            { emoji: '🐶', name: 'Пёс' },
-            { emoji: '🦊', name: 'Лиса' },
-            { emoji: '🐼', name: 'Панда' }
-        ];
-
-        // ========== ПЕРЕМЕННЫЕ ДЛЯ ОТВЕТОВ ==========
-        let replyContext = null;
-
-        // ========== INIT ==========
-        document.addEventListener('DOMContentLoaded', () => {
-            loadSettings();
-            initAvatarGrid();
-            lucide.createIcons();
-
-            const params = new URLSearchParams(window.location.search);
-            const joinCode = params.get('join');
-            if (joinCode) document.getElementById('code-in').value = joinCode;
-
-            // iOS momentum scroll fix
-            document.querySelectorAll('.chat-messages, .sidebar-body, .modal-body').forEach(el => {
-                el.style.webkitOverflowScrolling = 'touch';
-            });
-        });
-
-        // ========== SETTINGS ==========
-        function loadSettings() {
-            try {
-                const saved = localStorage.getItem('qs_profile');
-                if (saved) {
-                    state.profile = { ...state.profile, ...JSON.parse(saved) };
-                }
-            } catch (e) {
-                console.warn('Failed to load settings:', e);
-            }
-            
-            document.getElementById('settings-name').value = state.profile.name || '';
-            document.documentElement.setAttribute('data-theme', state.profile.theme);
-            updateThemeUI();
-        }
-
-        function saveSettings() {
-            const name = document.getElementById('settings-name').value.trim();
-            if (name) state.profile.name = name;
-            
-            try {
-                localStorage.setItem('qs_profile', JSON.stringify(state.profile));
-            } catch (e) {
-                console.warn('Failed to save settings:', e);
-            }
-            
-            if (name) document.getElementById('name-in').value = name;
-            
-            closeSettings();
-            showToast('Настройки сохранены', 'success');
-        }
-
-        function openSettings() {
-            document.getElementById('settings-modal').classList.add('open');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeSettings() {
-            document.getElementById('settings-modal').classList.remove('open');
-            document.body.style.overflow = '';
-        }
-
-        function closeSettingsBackdrop(e) {
-            if (e.target === document.getElementById('settings-modal')) closeSettings();
-        }
-
-        function setTheme(theme) {
-            state.profile.theme = theme;
-            document.documentElement.setAttribute('data-theme', theme);
-            updateThemeUI();
-            
-            // Update meta theme-color for mobile
-            const metaTheme = document.querySelector('meta[name="theme-color"]');
-            if (metaTheme) {
-                metaTheme.content = theme === 'dark' ? '#0a0a0f' : '#fafafa';
-            }
-        }
-
-        function updateThemeUI() {
-            const dark = document.getElementById('theme-dark');
-            const light = document.getElementById('theme-light');
-            if (dark && light) {
-                dark.classList.toggle('active', state.profile.theme === 'dark');
-                light.classList.toggle('active', state.profile.theme === 'light');
-            }
-        }
-
-        function initAvatarGrid() {
-            const grid = document.getElementById('avatar-grid');
-            if (!grid) return;
-            
-            grid.innerHTML = '';
-            AVATARS.forEach(({ emoji }) => {
-                const div = document.createElement('div');
-                div.className = 'avatar-item' + (emoji === state.profile.avatar ? ' selected' : '');
-                div.textContent = emoji;
-                div.title = AVATARS.find(a => a.emoji === emoji)?.name || '';
-                div.onclick = () => {
-                    state.profile.avatar = emoji;
-                    grid.querySelectorAll('.avatar-item').forEach(el => el.classList.remove('selected'));
-                    div.classList.add('selected');
-                };
-                grid.appendChild(div);
-            });
-        }
-
-        // ========== NAVIGATION ==========
-        function toggleNav() {
-            const nav = document.getElementById('app-nav');
-            const reveal = document.getElementById('nav-reveal');
-            nav.classList.toggle('hidden');
-            reveal.classList.toggle('visible', nav.classList.contains('hidden'));
-        }
-
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebar-overlay');
-            const isOpen = sidebar.classList.contains('open');
-            
-            if (isOpen) {
-                sidebar.classList.remove('open');
-                overlay.classList.remove('open');
-            } else {
-                sidebar.classList.add('open');
-                overlay.classList.add('open');
-            }
-        }
-
-        // ========== TOASTS ==========
-        function showToast(message, type = 'default') {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
-            
-            const icons = {
-                success: 'check-circle',
-                error: 'alert-circle',
-                default: 'info'
-            };
-            
-            toast.innerHTML = `
-                <i data-lucide="${icons[type] || 'info'}" style="width:16px; height:16px; flex-shrink:0;"></i>
-                <span>${message}</span>
-            `;
-            
-            container.appendChild(toast);
-            lucide.createIcons();
-            
-            setTimeout(() => {
-                toast.style.transition = 'all 0.3s var(--ease-out)';
-                toast.style.opacity = '0';
-                toast.style.transform = 'translateY(10px)';
-                setTimeout(() => toast.remove(), 300);
-            }, 3000);
-        }
-
-        // ========== VIDEO ==========
-        function parseUrl(url) {
-            try {
-                if (url.includes('youtube.com/watch') || url.includes('youtu.be/')) {
-                    let id = url.includes('youtu.be/') 
-                        ? url.split('youtu.be/')[1].split(/[?#]/)[0] 
-                        : new URL(url).searchParams.get('v');
-                    if (id) return `https://www.youtube.com/embed/${id}?autoplay=1&rel=0&playsinline=1`;
-                }
-                if (url.includes('vk.com/video')) {
-                    const m = url.match(/video(-?\d+)_(\d+)/);
-                    if (m) return `https://vk.com/video_ext.php?oid=${m[1]}&id=${m[2]}&hd=2&autoplay=1`;
-                }
-                return url;
-            } catch (e) {
-                return url;
-            }
-        }
-
-        function setVideo() {
-            const val = document.getElementById('url-input').value.trim();
-            if (!val) return;
-            
-            const url = parseUrl(val);
-            
-            if (state.ws && state.ws.readyState === WebSocket.OPEN) {
-                state.ws.send(JSON.stringify({ type: 'set_video', url }));
-            }
-            
-            const frame = document.getElementById('video-frame');
-            const empty = document.getElementById('player-empty');
-            
-            frame.src = url;
-            frame.style.display = 'block';
-            empty.style.display = 'none';
-            
-            document.getElementById('url-input').value = '';
-        }
-
-        // ========== CHAT ==========
-        function replyToMessage(messageId, sender, text) {
-            replyContext = { messageId, sender, text };
-            
-            // Показываем индикатор ответа
-            let indicator = document.getElementById('reply-indicator');
-            
-            if (!indicator) {
-                indicator = document.createElement('div');
-                indicator.id = 'reply-indicator';
-                indicator.className = 'reply-indicator';
-                document.body.appendChild(indicator);
-            }
-            
-            indicator.innerHTML = `
-                <div class="reply-indicator-content">
-                    Ответ <strong>${escapeHtml(sender)}</strong>: 
-                    "${escapeHtml(text.substring(0, 50))}${text.length > 50 ? '...' : ''}"
-                </div>
-                <button class="reply-indicator-cancel" onclick="cancelReply()">
-                    <i data-lucide="x" style="width:14px; height:14px;"></i>
+<!-- ========== PROFILE MODAL ========== -->
+<div class="modal-backdrop" id="profile-modal" onclick="closeProfile(event)">
+    <div class="modal-sheet" onclick="event.stopPropagation()" style="max-width:500px;">
+        <div class="modal-handle"></div>
+        <div class="modal-header">
+            <h2>👤 Профиль</h2>
+            <button class="close-btn material-icons-round" onclick="closeProfile()">close</button>
+        </div>
+        <div class="modal-body">
+            <div class="profile-avatar-edit">
+                <div class="current" id="profile-avatar-display">👤</div>
+                <button class="upload-btn" onclick="document.getElementById('avatar-input').click()">
+                    <span class="material-icons-round" style="font-size:16px;">upload</span>
+                    Изменить аватар
                 </button>
-            `;
-            
-            indicator.style.display = 'flex';
-            lucide.createIcons();
-            
-            // Подсвечиваем поле ввода
-            const chatMsg = document.getElementById('chat-msg');
-            chatMsg.focus();
-            chatMsg.placeholder = `Ответ ${sender}...`;
-        }
+                <input type="file" id="avatar-input" accept="image/*" onchange="uploadAvatar(event)">
+            </div>
+            <div class="settings-section">
+                <span class="label">Имя</span>
+                <input type="text" id="profile-name-input" class="profile-name-input" placeholder="Введите имя" maxlength="30">
+            </div>
+            <div class="settings-section">
+                <span class="label">Социальные сети</span>
+                <div class="social-links">
+                    <a href="#" onclick="event.preventDefault()"><span class="material-icons-round">telegram</span> Telegram</a>
+                    <a href="#" onclick="event.preventDefault()"><span class="material-icons-round">music_note</span> TikTok</a>
+                    <a href="#" onclick="event.preventDefault()"><span class="material-icons-round">play_arrow</span> YouTube</a>
+                    <a href="#" onclick="event.preventDefault()"><span class="material-icons-round">chat</span> Telegram SQLen</a>
+                    <a href="#" onclick="event.preventDefault()"><span class="material-icons-round">storefront</span> Магазин</a>
+                </div>
+            </div>
+            <div class="settings-section">
+                <span class="label">Обратная связь</span>
+                <a href="#" onclick="event.preventDefault()" class="feedback-link">
+                    <span class="material-icons-round">feedback</span>
+                    <span>Предложить улучшения</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
 
-        function cancelReply() {
-            replyContext = null;
-            const indicator = document.getElementById('reply-indicator');
-            if (indicator) indicator.style.display = 'none';
-            document.getElementById('chat-msg').placeholder = 'Написать сообщение...';
-        }
+<!-- ========== EMOJI PICKER ========== -->
+<div id="emoji-picker">
+    <div class="emoji-grid">
+        <span onclick="addEmoji('😊')">😊</span>
+        <span onclick="addEmoji('😂')">😂</span>
+        <span onclick="addEmoji('❤️')">❤️</span>
+        <span onclick="addEmoji('🔥')">🔥</span>
+        <span onclick="addEmoji('🎉')">🎉</span>
+        <span onclick="addEmoji('👍')">👍</span>
+        <span onclick="addEmoji('👏')">👏</span>
+        <span onclick="addEmoji('💪')">💪</span>
+        <span onclick="addEmoji('🤝')">🤝</span>
+        <span onclick="addEmoji('🎬')">🎬</span>
+        <span onclick="addEmoji('🍿')">🍿</span>
+        <span onclick="addEmoji('🎥')">🎥</span>
+        <span onclick="addEmoji('📺')">📺</span>
+        <span onclick="addEmoji('✨')">✨</span>
+        <span onclick="addEmoji('⭐')">⭐</span>
+        <span onclick="addEmoji('🎯')">🎯</span>
+        <span onclick="addEmoji('🎮')">🎮</span>
+        <span onclick="addEmoji('🎵')">🎵</span>
+        <span onclick="addEmoji('🎶')">🎶</span>
+        <span onclick="addEmoji('🎭')">🎭</span>
+        <span onclick="addEmoji('🎪')">🎪</span>
+    </div>
+</div>
 
-        function toggleLike(button, messageId) {
-    const isLiked = button.classList.contains('liked');
-    const action = isLiked ? 'remove' : 'add';
-    
-    // Анимация при нажатии
-    button.style.transform = 'scale(1.2)';
+<!-- ========== TOAST CONTAINER ========== -->
+<div class="toast-container" id="toast-container"></div>
+
+<script>
+// ===================== MOVIES DATABASE =====================
+const MOVIES_DB = [
+    {
+        id: 'film_001',
+        type: 'film',
+        title: 'Супергёрл',
+        poster_url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBBoON1FL9u7c1JecVTNz6MknCpYcC0t102mq59HzvRrATuC5y7EYEOKE&s=10',
+        video_url: 'https://vkvideo.ru/video_ext.php?oid=-220018529&id=456248755&hash=0ae86dac13ead8dd&hd=4',
+        rating: 8.6,
+        genres: ['Фантастика', 'Боевик']
+    },
+    {
+        id: 'film_002',
+        type: 'series',
+        title: 'Человек-паук',
+        poster_url: 'https://preview.redd.it/in-what-order-would-you-rank-spider-man-movies-from-best-to-v0-35evrg6kl0ef1.jpeg?auto=webp&s=8a383b4142d2b560c7a47c38a791dde00e80493f',
+        video_url: 'https://vkvideo.ru/video_ext.php?oid=-219966194&id=456240819&hash=fd2790c56104c7d1&hd=4',
+        rating: 9.0,
+        genres: ['Экшен', 'Драма']
+    },
+    {
+        id: 'film_003',
+        type: 'dorama',
+        title: 'Игра в кальмара',
+        poster_url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4H4mr6bDq_Qoq_e-fARgbQXPYxVCGy4whkEoY3-htjg&s=10',
+        video_url: 'https://vkvideo.ru/video_ext.php?oid=-186400980&id=456243495&hash=57914bf158d1ee1e&hd=4',
+        rating: 8.0,
+        genres: ['Триллер', 'Драма']
+    },
+    {
+        id: 'film_004',
+        type: 'dorama',
+        title: 'Словно гончие',
+        poster_url: 'https://www.kino-teatr.ru/movie/posters/big/7/2/167127.jpg',
+        video_url: 'https://vkvideo.ru/video_ext.php?oid=-186400980&id=456242864&hash=15db1478af7b4ae2&hd=4',
+        rating: 8.0,
+        genres: ['Боевик', 'Криминал']
+    },
+    {
+        id: 'film_005',
+        type: 'film',
+        title: 'Интерстеллар',
+        poster_url: 'https://m.media-amazon.com/images/M/MV5BZjdkOTU3MDktN2IxOS00OTc5LTkzY2QtNGQzYjczM2Q1NmUyXkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_.jpg',
+        video_url: 'https://www.youtube.com/embed/zSWdZVtXT7E?autoplay=1',
+        rating: 9.2,
+        genres: ['Фантастика', 'Драма']
+    },
+    {
+        id: 'film_006',
+        type: 'film',
+        title: 'Дюна',
+        poster_url: 'https://m.media-amazon.com/images/M/MV5BN2FjNmEyNWMtYzM0ZS00NjIyLTg5YzYtYThlMGVjNzE1OGViXkEyXkFqcGdeQXVyMTkxNjUyNQ@@._V1_.jpg',
+        video_url: 'https://www.youtube.com/embed/8Bk4F4XxhR8?autoplay=1',
+        rating: 8.5,
+        genres: ['Фантастика', 'Приключения']
+    },
+    {
+        id: 'film_007',
+        type: 'series',
+        title: 'Одни из нас',
+        poster_url: 'https://m.media-amazon.com/images/M/MV5BZGUzYTI3M2EtZmM0Yy00NGUyLWI4Y2MtNTFkOTc5N2ZmOTI5XkEyXkFqcGdeQXVyMTUzMTg2ODkz._V1_.jpg',
+        video_url: 'https://www.youtube.com/embed/uLtkt8BonwM?autoplay=1',
+        rating: 8.8,
+        genres: ['Драма', 'Приключения']
+    },
+    {
+        id: 'film_008',
+        type: 'film',
+        title: 'Оппенгеймер',
+        poster_url: 'https://m.media-amazon.com/images/M/MV5BMDBmYTZjNjUtN2M1MS00MTQ2LTk2ODgtNzc2M2QyZGE5NTVjXkEyXkFqcGdeQXVyNzAwMjU2MTY@._V1_.jpg',
+        video_url: 'https://www.youtube.com/embed/uYPbbksJxIg?autoplay=1',
+        rating: 8.9,
+        genres: ['Драма', 'Исторический']
+    }
+];
+
+// ===================== STATE =====================
+const state = {
+    ws: null,
+    isHost: false,
+    myId: null,
+    roomCode: null,
+    inRoom: false,
+    profile: {
+        name: '',
+        avatar: '👤',
+        theme: 'dark',
+        lang: 'ru',
+        locationHidden: false,
+        avatarUrl: null
+    },
+    replyContext: null,
+    currentVideo: null,
+    messages: []
+};
+
+// ===================== LOADING =====================
+window.addEventListener('load', () => {
     setTimeout(() => {
-        button.style.transform = '';
-    }, 150);
+        document.getElementById('loading-screen').classList.add('hidden');
+        document.getElementById('app').classList.add('active');
+        loadSettings();
+        renderMovies();
+        updateUI();
+        checkJoinParam();
+    }, 800);
+});
+
+// ===================== RENDER MOVIES =====================
+function renderMovies() {
+    const grid = document.getElementById('movies-grid');
+    grid.innerHTML = MOVIES_DB.map(m => {
+        const typeLabel = m.type === 'series' ? 'Сериал' : m.type === 'dorama' ? 'Дорама' : 'Фильм';
+        const badgeClass = m.type === 'series' ? 'series' : m.type === 'dorama' ? 'dorama' : '';
+        return `
+            <div class="movie-card" onclick="playMovie('${m.id}')">
+                <div class="poster">
+                    <img src="${m.poster_url}" alt="${m.title}" onerror="this.style.display='none'; this.parentElement.innerHTML='<div style=\\'font-size:48px;\\'>🎬</div>'">
+                    <div class="play-overlay">
+                        <span class="material-icons-round">play_circle</span>
+                    </div>
+                    <span class="badge ${badgeClass}">${typeLabel}</span>
+                </div>
+                <div class="info">
+                    <h3>${m.title}</h3>
+                    <div class="meta">
+                        <span class="rating">⭐ ${m.rating || '?'}</span>
+                        <span>•</span>
+                        <span>${(m.genres || []).slice(0,2).join(', ')}</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function playMovie(id) {
+    const movie = MOVIES_DB.find(m => m.id === id);
+    if (!movie) return;
+    
+    const videoUrl = movie.video_url;
+    if (!videoUrl) {
+        showToast('У этого фильма нет доступного видео', 'error');
+        return;
+    }
+    
+    document.getElementById('create-url').value = videoUrl;
+    document.getElementById('create-name').value = `Просмотр: ${movie.title}`;
+    openCreateRoom();
+}
+
+// ===================== SETTINGS =====================
+function loadSettings() {
+    try {
+        const saved = localStorage.getItem('qs_profile_v2');
+        if (saved) {
+            state.profile = { ...state.profile, ...JSON.parse(saved) };
+        }
+    } catch (e) {}
+    
+    document.documentElement.setAttribute('data-theme', state.profile.theme);
+    document.getElementById('profile-name-input').value = state.profile.name || '';
+    document.getElementById('profile-avatar-display').textContent = state.profile.avatar || '👤';
+    if (state.profile.avatarUrl) {
+        document.getElementById('profile-avatar-display').innerHTML = `<img src="${state.profile.avatarUrl}">`;
+        document.getElementById('profile-btn').innerHTML = `<img src="${state.profile.avatarUrl}">`;
+    } else {
+        document.getElementById('profile-btn').textContent = state.profile.avatar || '👤';
+    }
+    
+    updateThemeUI();
+    updateLangUI();
+    updateLocationUI();
+}
+
+function saveProfile() {
+    try {
+        localStorage.setItem('qs_profile_v2', JSON.stringify(state.profile));
+    } catch (e) {}
+}
+
+function setTheme(theme) {
+    state.profile.theme = theme;
+    document.documentElement.setAttribute('data-theme', theme);
+    updateThemeUI();
+    saveProfile();
+}
+
+function updateThemeUI() {
+    document.querySelectorAll('.theme-options button').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.theme === state.profile.theme);
+    });
+}
+
+function setLang(lang) {
+    state.profile.lang = lang;
+    updateLangUI();
+    saveProfile();
+    translateUI(lang);
+}
+
+function updateLangUI() {
+    document.querySelectorAll('.lang-options button').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.lang === state.profile.lang);
+    });
+}
+
+const translations = {
+    ru: {
+        'Все фильмы и сериалы': 'Все фильмы и сериалы',
+        'Введите код комнаты...': 'Введите код комнаты...',
+        'Создать комнату': 'Создать комнату',
+        'Ссылка на видео (YouTube / VK)': 'Ссылка на видео (YouTube / VK)',
+        'Название комнаты': 'Название комнаты',
+        'Написать сообщение...': 'Написать сообщение...',
+        'Участники': 'Участники',
+        'Копировать ссылку приглашения': 'Копировать ссылку приглашения',
+        'Настройки': 'Настройки',
+        'Тема оформления': 'Тема оформления',
+        'Тёмная': 'Тёмная',
+        'Светлая': 'Светлая',
+        'Морская': 'Морская',
+        'Фиолетовая': 'Фиолетовая',
+        'Язык': 'Язык',
+        'Конфиденциальность': 'Конфиденциальность',
+        'Скрыть местоположение': 'Скрыть местоположение',
+        'Профиль': 'Профиль',
+        'Изменить аватар': 'Изменить аватар',
+        'Имя': 'Имя',
+        'Социальные сети': 'Социальные сети',
+        'Обратная связь': 'Обратная связь',
+        'Предложить улучшения': 'Предложить улучшения',
+        'Главная': 'Главная',
+        'Создать': 'Создать'
+    },
+    en: {
+        'Все фильмы и сериалы': 'All Movies & Series',
+        'Введите код комнаты...': 'Enter room code...',
+        'Создать комнату': 'Create Room',
+        'Ссылка на видео (YouTube / VK)': 'Video URL (YouTube / VK)',
+        'Название комнаты': 'Room name',
+        'Написать сообщение...': 'Type a message...',
+        'Участники': 'Members',
+        'Копировать ссылку приглашения': 'Copy invite link',
+        'Настройки': 'Settings',
+        'Тема оформления': 'Theme',
+        'Тёмная': 'Dark',
+        'Светлая': 'Light',
+        'Морская': 'Ocean',
+        'Фиолетовая': 'Purple',
+        'Язык': 'Language',
+        'Конфиденциальность': 'Privacy',
+        'Скрыть местоположение': 'Hide location',
+        'Профиль': 'Profile',
+        'Изменить аватар': 'Change avatar',
+        'Имя': 'Name',
+        'Социальные сети': 'Social networks',
+        'Обратная связь': 'Feedback',
+        'Предложить улучшения': 'Suggest improvements',
+        'Главная': 'Home',
+        'Создать': 'Create'
+    }
+};
+
+function translateUI(lang) {
+    const t = translations[lang] || translations.ru;
+    document.querySelectorAll('[data-translate]').forEach(el => {
+        const key = el.dataset.translate;
+        if (t[key]) el.textContent = t[key];
+    });
+    const searchInput = document.querySelector('#search-input');
+    if (searchInput) searchInput.placeholder = t['Введите код комнаты...'] || 'Введите код комнаты...';
+    const chatInput = document.querySelector('#chat-input');
+    if (chatInput) chatInput.placeholder = t['Написать сообщение...'] || 'Написать сообщение...';
+}
+
+function toggleLocation() {
+    state.profile.locationHidden = !state.profile.locationHidden;
+    updateLocationUI();
+    saveProfile();
+}
+
+function updateLocationUI() {
+    const toggle = document.getElementById('location-toggle');
+    if (toggle) toggle.classList.toggle('active', state.profile.locationHidden);
+}
+
+// ===================== PROFILE =====================
+function openProfile() {
+    document.getElementById('profile-name-input').value = state.profile.name || '';
+    const display = document.getElementById('profile-avatar-display');
+    if (state.profile.avatarUrl) {
+        display.innerHTML = `<img src="${state.profile.avatarUrl}">`;
+    } else {
+        display.textContent = state.profile.avatar || '👤';
+    }
+    document.getElementById('profile-modal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeProfile(e) {
+    if (e && e.target !== e.currentTarget) return;
+    const name = document.getElementById('profile-name-input').value.trim();
+    if (name) {
+        state.profile.name = name;
+        saveProfile();
+    }
+    document.getElementById('profile-modal').classList.remove('open');
+    document.body.style.overflow = '';
+}
+
+function uploadAvatar(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        const dataUrl = e.target.result;
+        state.profile.avatarUrl = dataUrl;
+        state.profile.avatar = '🖼️';
+        document.getElementById('profile-avatar-display').innerHTML = `<img src="${dataUrl}">`;
+        document.getElementById('profile-btn').innerHTML = `<img src="${dataUrl}">`;
+        saveProfile();
+        showToast('Аватар обновлён!', 'success');
+    };
+    reader.readAsDataURL(file);
+    event.target.value = '';
+}
+
+// ===================== UI UPDATE =====================
+function updateUI() {
+    const btn = document.getElementById('profile-btn');
+    if (state.profile.avatarUrl) {
+        btn.innerHTML = `<img src="${state.profile.avatarUrl}">`;
+    } else {
+        btn.textContent = state.profile.avatar || '👤';
+    }
+}
+
+// ===================== NAVIGATION =====================
+function goHome() {
+    if (state.inRoom) {
+        leaveRoom();
+    }
+    document.getElementById('movies-container').style.display = 'block';
+    document.getElementById('room-view').classList.remove('active');
+    document.getElementById('fab-btn').classList.remove('hidden');
+}
+
+// ===================== JOIN BY CODE =====================
+function joinByCode() {
+    const code = document.getElementById('search-input').value.trim();
+    if (!code) {
+        showToast('Введите код комнаты', 'error');
+        return;
+    }
+    document.getElementById('search-input').value = '';
+    connectWebSocket('join', null, null, code);
+}
+
+function checkJoinParam() {
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get('join');
+    if (code) {
+        document.getElementById('search-input').value = code;
+        setTimeout(joinByCode, 500);
+    }
+}
+
+// ===================== CREATE ROOM =====================
+function openCreateRoom() {
+    document.getElementById('create-modal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeCreateRoom(e) {
+    if (e && e.target !== e.currentTarget) return;
+    document.getElementById('create-modal').classList.remove('open');
+    document.body.style.overflow = '';
+}
+
+function createRoom() {
+    const url = document.getElementById('create-url').value.trim();
+    const name = document.getElementById('create-name').value.trim() || 'Моя комната';
+    
+    if (!url) {
+        showToast('Введите ссылку на видео', 'error');
+        return;
+    }
+    
+    const parsedUrl = parseVideoUrl(url);
+    if (!parsedUrl) {
+        showToast('Некорректная ссылка на видео', 'error');
+        return;
+    }
+    
+    closeCreateRoom();
+    connectWebSocket('create', parsedUrl, name);
+}
+
+function parseVideoUrl(url) {
+    try {
+        if (url.includes('youtube.com/watch') || url.includes('youtu.be/')) {
+            let id = url.includes('youtu.be/') 
+                ? url.split('youtu.be/')[1].split(/[?#]/)[0] 
+                : new URL(url).searchParams.get('v');
+            if (id) return `https://www.youtube.com/embed/${id}?autoplay=1&rel=0&playsinline=1`;
+        }
+        if (url.includes('vk.com/video') || url.includes('vkvideo.ru')) {
+            const m = url.match(/video(-?\d+)_(\d+)/);
+            if (m) return `https://vk.com/video_ext.php?oid=${m[1]}&id=${m[2]}&hd=2&autoplay=1`;
+            const vkMatch = url.match(/video_ext\.php\?oid=(-?\d+)&id=(\d+)/);
+            if (vkMatch) return `https://vk.com/video_ext.php?oid=${vkMatch[1]}&id=${vkMatch[2]}&hd=2&autoplay=1`;
+        }
+        return url;
+    } catch (e) {
+        return null;
+    }
+}
+
+// ===================== WEBSOCKET =====================
+function connectWebSocket(type, videoUrl, roomName, joinCode) {
+    const proto = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const ws = new WebSocket(`${proto}//${window.location.host}`);
+    
+    ws.onopen = () => {
+        const payload = {
+            type: type,
+            name: state.profile.name || 'Аноним',
+            avatar: state.profile.avatar,
+            videoUrl: videoUrl || '',
+            roomName: roomName || ''
+        };
+        if (joinCode) payload.code = joinCode;
+        if (state.profile.avatarUrl) payload.avatarUrl = state.profile.avatarUrl;
+        ws.send(JSON.stringify(payload));
+    };
+    
+    ws.onmessage = (e) => {
+        try {
+            const data = JSON.parse(e.data);
+            handleWsMessage(data);
+        } catch (err) {
+            console.error('WS parse error:', err);
+        }
+    };
+    
+    ws.onerror = () => {
+        showToast('Ошибка подключения к серверу', 'error');
+    };
+    
+    ws.onclose = () => {
+        if (state.inRoom) {
+            showToast('Соединение разорвано', 'error');
+        }
+        state.inRoom = false;
+    };
+    
+    state.ws = ws;
+}
+
+function handleWsMessage(data) {
+    if (data.type === 'room_created' || data.type === 'joined') {
+        state.isHost = data.type === 'room_created';
+        state.myId = data.clientId;
+        state.roomCode = data.code;
+        state.inRoom = true;
+        enterRoom(data);
+        return;
+    }
+    
+    if (data.type === 'error') {
+        showToast(data.msg || 'Ошибка', 'error');
+        return;
+    }
+    
+    if (data.type === 'set_video') {
+        setPlayerVideo(data.url);
+        return;
+    }
+    
+    if (data.type === 'new_message') {
+        addMessage(data.message);
+        return;
+    }
+    
+    if (data.type === 'users') {
+        updateUsersList(data.users);
+        return;
+    }
+    
+    if (data.type === 'reaction_update') {
+        updateReaction(data);
+        return;
+    }
+}
+
+function enterRoom(data) {
+    document.getElementById('movies-container').style.display = 'none';
+    document.getElementById('room-view').classList.add('active');
+    document.getElementById('room-code-display').textContent = data.code || '----';
+    document.getElementById('fab-btn').classList.add('hidden');
+    
+    if (data.videoUrl) {
+        setPlayerVideo(data.videoUrl);
+    }
+    
+    if (data.messages) {
+        data.messages.forEach(msg => addMessage(msg, true));
+    }
+    
+    if (data.users) {
+        updateUsersList(data.users);
+    }
+    
+    showToast(data.type === 'room_created' ? 'Комната создана!' : 'Вы присоединились!', 'success');
+}
+
+function setPlayerVideo(url) {
+    const frame = document.getElementById('video-frame');
+    const placeholder = document.getElementById('player-placeholder');
+    
+    if (url && url.length > 10) {
+        frame.src = url;
+        frame.style.display = 'block';
+        placeholder.style.display = 'none';
+        state.currentVideo = url;
+    } else {
+        frame.style.display = 'none';
+        placeholder.style.display = 'flex';
+    }
+}
+
+function leaveRoom() {
+    if (state.ws) {
+        state.ws.close();
+        state.ws = null;
+    }
+    state.inRoom = false;
+    state.roomCode = null;
+    state.isHost = false;
+    
+    document.getElementById('room-view').classList.remove('active');
+    document.getElementById('movies-container').style.display = 'block';
+    document.getElementById('messages-container').innerHTML = '';
+    document.getElementById('video-frame').src = '';
+    document.getElementById('video-frame').style.display = 'none';
+    document.getElementById('player-placeholder').style.display = 'flex';
+    document.getElementById('chat-sidebar').style.background = 'var(--bg-secondary)';
+    document.getElementById('fab-btn').classList.remove('hidden');
+    
+    showToast('Вы вышли из комнаты');
+}
+
+// ===================== CHAT =====================
+function sendMessage() {
+    const input = document.getElementById('chat-input');
+    const text = input.value.trim();
+    if (!text || !state.ws || !state.inRoom) return;
+    
+    const msgData = {
+        type: state.replyContext ? 'reply' : 'chat',
+        text: text,
+        sender: state.profile.name || 'Аноним',
+        avatar: state.profile.avatar,
+        clientId: state.myId,
+        time: new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }),
+        roomCode: state.roomCode
+    };
+    
+    if (state.profile.avatarUrl) msgData.avatarUrl = state.profile.avatarUrl;
+    if (state.replyContext) {
+        msgData.replyToId = state.replyContext.messageId;
+        msgData.replyTo = {
+            id: state.replyContext.messageId,
+            text: state.replyContext.text,
+            sender: state.replyContext.sender
+        };
+    }
+    
+    state.ws.send(JSON.stringify(msgData));
+    input.value = '';
+    cancelReply();
+}
+
+function addMessage(msg, isHistory = false) {
+    const container = document.getElementById('messages-container');
+    const isOwn = msg.clientId === state.myId;
+    
+    const div = document.createElement('div');
+    div.className = `msg${isOwn ? ' own' : ''}`;
+    div.dataset.messageId = msg.id || Date.now().toString();
+    
+    const avatarContent = msg.avatarUrl ? `<img src="${msg.avatarUrl}">` : (msg.avatar || '👤');
+    
+    let replyHtml = '';
+    if (msg.replyTo) {
+        replyHtml = `
+            <div class="reply-preview">
+                <span>↳ ${escapeHtml(msg.replyTo.sender || 'Аноним')}: ${escapeHtml(msg.replyTo.text || '')}</span>
+            </div>
+        `;
+    }
+    
+    div.innerHTML = `
+        <div class="avatar">${avatarContent}</div>
+        <div class="bubble">
+            ${replyHtml}
+            <div class="sender">${escapeHtml(msg.sender || 'Аноним')}</div>
+            ${escapeHtml(msg.text || '')}
+            <span class="time">${msg.time || ''}</span>
+            <div class="actions">
+                <button onclick="replyToMessage('${div.dataset.messageId}', '${escapeHtml(msg.sender || 'Аноним')}', '${escapeHtml(msg.text || '').substring(0, 50).replace(/'/g, "\\'")}')">
+                    <span class="material-icons-round" style="font-size:14px;">reply</span>
+                </button>
+                <button class="like-btn" data-msgid="${div.dataset.messageId}" onclick="toggleLike(this, '${div.dataset.messageId}')">
+                    <span class="material-icons-round" style="font-size:14px;">favorite</span>
+                    <span class="likes-count">0</span>
+                </button>
+            </div>
+        </div>
+    `;
+    
+    container.appendChild(div);
+    container.scrollTop = container.scrollHeight;
+}
+
+function replyToMessage(messageId, sender, text) {
+    state.replyContext = { messageId, sender, text };
+    const indicator = document.getElementById('reply-indicator');
+    document.getElementById('reply-text').textContent = `Ответ ${sender}: ${text.substring(0, 40)}${text.length > 40 ? '...' : ''}`;
+    indicator.style.display = 'flex';
+    document.getElementById('chat-input').focus();
+    document.getElementById('chat-input').placeholder = `Ответ ${sender}...`;
+}
+
+function cancelReply() {
+    state.replyContext = null;
+    document.getElementById('reply-indicator').style.display = 'none';
+    document.getElementById('chat-input').placeholder = 'Написать сообщение...';
+}
+
+function toggleLike(btn, messageId) {
+    const isLiked = btn.classList.contains('liked');
+    const action = isLiked ? 'remove' : 'add';
     
     if (state.ws && state.ws.readyState === WebSocket.OPEN) {
         state.ws.send(JSON.stringify({
@@ -1959,354 +2287,198 @@
         }));
     }
     
-    // Оптимистичное обновление UI
-    const likesSpan = button.querySelector('.likes-count');
-    let currentLikes = parseInt(likesSpan.textContent) || 0;
-    
+    const countSpan = btn.querySelector('.likes-count');
+    let count = parseInt(countSpan.textContent) || 0;
     if (!isLiked) {
-        button.classList.add('liked');
-        likesSpan.textContent = currentLikes + 1;
+        btn.classList.add('liked');
+        countSpan.textContent = count + 1;
     } else {
-        button.classList.remove('liked');
-        likesSpan.textContent = Math.max(0, currentLikes - 1);
+        btn.classList.remove('liked');
+        countSpan.textContent = Math.max(0, count - 1);
     }
 }
 
-        function handleReactionUpdate(data) {
-            const messageElements = document.querySelectorAll('.message');
-            for (const msgEl of messageElements) {
-                if (msgEl.dataset.messageId === data.messageId) {
-                    const likeBtn = msgEl.querySelector('.like-btn');
-                    if (likeBtn) {
-                        const likesSpan = likeBtn.querySelector('.likes-count');
-                        likesSpan.textContent = data.reactions.likes;
-                        
-                        if (data.userReacted) {
-                            likeBtn.classList.add('liked');
-                        } else {
-                            likeBtn.classList.remove('liked');
-                        }
-                    }
-                    break;
+function updateReaction(data) {
+    const msgs = document.querySelectorAll('.msg');
+    for (const msg of msgs) {
+        if (msg.dataset.messageId === data.messageId) {
+            const btn = msg.querySelector('.like-btn');
+            if (btn) {
+                const countSpan = btn.querySelector('.likes-count');
+                countSpan.textContent = data.reactions.likes || 0;
+                if (data.userReacted) {
+                    btn.classList.add('liked');
+                } else {
+                    btn.classList.remove('liked');
                 }
             }
+            break;
         }
+    }
+}
 
-        function sendChat() {
-            const input = document.getElementById('chat-msg');
-            const text = input.value.trim();
-            if (!text) return;
-            
-            const messageData = {
-                type: replyContext ? 'reply' : 'chat',
-                text: text,
-                sender: state.profile.name || 'Аноним',
-                avatar: state.profile.avatar,
-                clientId: state.myId,
-                time: new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }),
-                roomCode: state.roomCode
-            };
-            
-            if (replyContext) {
-                messageData.replyToId = replyContext.messageId;
-            }
-            
-            if (state.ws && state.ws.readyState === WebSocket.OPEN) {
-                state.ws.send(JSON.stringify(messageData));
-            } else {
-                // Demo mode
-                addMessage({ 
-                    ...messageData, 
-                    own: true,
-                    id: Date.now().toString(),
-                    replyTo: replyContext ? {
-                        id: replyContext.messageId,
-                        text: replyContext.text,
-                        sender: replyContext.sender
-                    } : null
-                });
-            }
-            
-            input.value = '';
-            cancelReply();
-        }
+function toggleEmojiPicker() {
+    const picker = document.getElementById('emoji-picker');
+    picker.style.display = picker.style.display === 'none' ? 'block' : 'none';
+}
 
-        function addMessage(data) {
-            const container = document.getElementById('chat-messages');
-            const msg = document.createElement('div');
-            msg.className = 'message' + (data.own ? ' own' : '');
-            msg.dataset.messageId = data.id || Date.now().toString();
-            
-            let replyHtml = '';
-            if (data.replyTo) {
-                replyHtml = `
-                    <div class="message-reply">
-                        <span class="reply-sender">${escapeHtml(data.replyTo.sender)}</span>
-                        <span class="reply-text">→ ${escapeHtml(data.replyTo.text)}</span>
-                    </div>
-                `;
-            }
-            
-            msg.innerHTML = `
-                <div class="message-avatar">${data.avatar || '👤'}</div>
-                <div class="message-body">
-                    ${replyHtml}
-                    <div class="message-bubble">${escapeHtml(data.text)}</div>
-                    <div class="message-meta">
-                        <span>${escapeHtml(data.sender || 'Аноним')}</span>
-                        <span>•</span>
-                        <span>${data.time || ''}</span>
-                    </div>
-                    <div class="message-actions">
-                        <button class="message-action-btn" onclick="replyToMessage('${msg.dataset.messageId}', '${escapeHtml(data.sender || 'Аноним')}', '${escapeHtml(data.text).substring(0, 50).replace(/'/g, "\\'")}')">
-                            <i data-lucide="reply" style="width:12px; height:12px;"></i>
-                            Ответить
-                        </button>
+function addEmoji(emoji) {
+    const input = document.getElementById('chat-input');
+    input.value += emoji;
+    input.focus();
+    document.getElementById('emoji-picker').style.display = 'none';
+}
 
-<button class="like-btn" data-message-id="${msg.dataset.messageId}" onclick="toggleLike(this, '${msg.dataset.messageId}')">
-    <i data-lucide="heart" style="width:14px; height:14px;"></i>
-    <span class="likes-count">0</span>
-</button>
-                    </div>
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// ===================== USERS =====================
+function updateUsersList(users) {
+    const container = document.getElementById('users-list');
+    const countEl = document.getElementById('users-count');
+    
+    if (!users) {
+        countEl.textContent = '0';
+        container.innerHTML = '';
+        return;
+    }
+    
+    countEl.textContent = users.length;
+    container.innerHTML = users.map(u => {
+        const avatarContent = u.avatarUrl ? `<img src="${u.avatarUrl}">` : (u.avatar || '👤');
+        return `
+            <div class="user-item">
+                <div class="avatar">${avatarContent}</div>
+                <div class="info">
+                    <div class="name">${escapeHtml(u.name || 'Аноним')}</div>
+                    <div class="role">${u.isHost ? '🎯 Ведущий' : '👤 Участник'}</div>
                 </div>
-            `;
-            
-            container.appendChild(msg);
-            container.scrollTop = container.scrollHeight;
-            lucide.createIcons();
+                ${u.isHost ? '<span class="host-badge">HOST</span>' : ''}
+            </div>
+        `;
+    }).join('');
+}
+
+function openUsersList() {
+    document.getElementById('users-modal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeUsersModal(e) {
+    if (e && e.target !== e.currentTarget) return;
+    document.getElementById('users-modal').classList.remove('open');
+    document.body.style.overflow = '';
+}
+
+function copyInviteLink() {
+    const link = `${window.location.origin}${window.location.pathname}?join=${state.roomCode}`;
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(link)
+            .then(() => showToast('Ссылка скопирована!', 'success'))
+            .catch(() => fallbackCopy(link));
+    } else {
+        fallbackCopy(link);
+    }
+}
+
+function fallbackCopy(text) {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try {
+        document.execCommand('copy');
+        showToast('Ссылка скопирована!', 'success');
+    } catch (e) {
+        showToast('Не удалось скопировать', 'error');
+    }
+    document.body.removeChild(ta);
+}
+
+// ===================== SETTINGS MODALS =====================
+function openSettings() {
+    document.getElementById('settings-modal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeSettings(e) {
+    if (e && e.target !== e.currentTarget) return;
+    document.getElementById('settings-modal').classList.remove('open');
+    document.body.style.overflow = '';
+}
+
+// ===================== TOASTS =====================
+function showToast(message, type = 'default') {
+    const container = document.getElementById('toast-container');
+    const toast = document.createElement('div');
+    toast.className = `toast${type === 'success' ? ' success' : ''}${type === 'error' ? ' error' : ''}`;
+    toast.textContent = message;
+    toast.onclick = () => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'scale(0.95)';
+        setTimeout(() => toast.remove(), 300);
+    };
+    container.appendChild(toast);
+    
+    setTimeout(() => {
+        if (toast.parentNode) {
+            toast.style.opacity = '0';
+            toast.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                if (toast.parentNode) toast.remove();
+            }, 300);
         }
+    }, 3000);
+}
 
-        function clearChat() {
-            document.getElementById('chat-messages').innerHTML = '';
-            showToast('Чат очищен');
+// ===================== KEYBOARD SHORTCUTS =====================
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        closeSettings();
+        closeProfile();
+        closeUsersModal();
+        closeCreateRoom();
+        document.getElementById('emoji-picker').style.display = 'none';
+    }
+});
+
+// Close emoji picker on outside click
+document.addEventListener('click', (e) => {
+    const picker = document.getElementById('emoji-picker');
+    const btn = document.querySelector('.emoji-btn');
+    if (picker && picker.style.display !== 'none' && !picker.contains(e.target) && !btn?.contains(e.target)) {
+        picker.style.display = 'none';
+    }
+});
+
+// ===================== AMBIENT EFFECT =====================
+const originalSetPlayerVideo = setPlayerVideo;
+setPlayerVideo = function(url) {
+    originalSetPlayerVideo(url);
+    const chat = document.getElementById('chat-sidebar');
+    if (url && chat) {
+        let hash = 0;
+        for (let i = 0; i < url.length; i++) {
+            hash = url.charCodeAt(i) + ((hash << 5) - hash);
         }
+        const hue = Math.abs(hash % 360);
+        chat.style.setProperty('--ambient-hue', hue);
+        chat.style.background = `linear-gradient(180deg, 
+            hsl(${hue}, 30%, 6%), 
+            var(--bg-secondary) 50%
+        )`;
+    } else if (chat) {
+        chat.style.background = 'var(--bg-secondary)';
+    }
+};
 
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-
-        // ========== CONNECTION ==========
-        function connect(type) {
-            const nameInput = document.getElementById('name-in').value.trim();
-            const name = nameInput || state.profile.name || 'Аноним';
-            const code = document.getElementById('code-in').value.trim();
-            const proto = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-            
-            if (nameInput && nameInput !== state.profile.name) {
-                state.profile.name = nameInput;
-                try {
-                    localStorage.setItem('qs_profile', JSON.stringify(state.profile));
-                } catch (e) {}
-            }
-
-            try {
-                state.ws = new WebSocket(`${proto}//${window.location.host}`);
-                
-                state.ws.onopen = () => {
-                    state.ws.send(JSON.stringify({
-                        type,
-                        name,
-                        code,
-                        avatar: state.profile.avatar
-                    }));
-                };
-                
-                state.ws.onmessage = (e) => {
-                    try {
-                        const d = JSON.parse(e.data);
-                        handleServerMessage(d);
-                    } catch (err) {
-                        console.error('Message parse error:', err);
-                    }
-                };
-                
-                state.ws.onerror = () => {
-                    showToast('Ошибка подключения к серверу', 'error');
-                };
-                
-                state.ws.onclose = () => {
-                    showToast('Соединение разорвано', 'error');
-                };
-                
-            } catch (e) {
-                showToast('Не удалось подключиться', 'error');
-                console.error(e);
-            }
-        }
-
-        function handleServerMessage(d) {
-            if (d.type === 'room_created' || d.type === 'joined') {
-                state.isHost = d.isHost || (d.type === 'room_created');
-                state.myId = d.clientId;
-                state.roomCode = d.code;
-                
-                document.getElementById('screen-auth').classList.remove('active');
-                document.getElementById('screen-app').classList.add('active');
-                document.getElementById('room-code-display').innerText = d.code;
-                
-                // Update chat header avatar
-                const headerAvatar = document.getElementById('chat-header-avatar');
-                headerAvatar.innerHTML = state.profile.avatar;
-                headerAvatar.style.fontSize = '20px';
-                
-                if (d.videoUrl) {
-                    const frame = document.getElementById('video-frame');
-                    const empty = document.getElementById('player-empty');
-                    frame.src = d.videoUrl;
-                    frame.style.display = 'block';
-                    empty.style.display = 'none';
-                }
-                
-                showToast(
-                    d.type === 'room_created' ? 'Комната создана!' : 'Вы присоединились к комнате',
-                    'success'
-                );
-            }
-            
-            if (d.type === 'set_video') {
-                const frame = document.getElementById('video-frame');
-                const empty = document.getElementById('player-empty');
-                frame.src = d.url;
-                frame.style.display = 'block';
-                empty.style.display = 'none';
-            }
-            
-            if (d.type === 'chat') {
-                addMessage({
-                    text: d.text,
-                    sender: d.sender || 'Аноним',
-                    avatar: d.avatar || '👤',
-                    own: d.clientId === state.myId,
-                    time: d.time
-                });
-            }
-            
-            if (d.type === 'new_message') {
-                addMessage({
-                    ...d.message,
-                    own: d.message.clientId === state.myId
-                });
-            }
-            
-            if (d.type === 'reaction_update') {
-                handleReactionUpdate(d);
-            }
-            
-            if (d.type === 'users') {
-                updateUsersList(d.users);
-            }
-        }
-
-        function updateUsersList(users) {
-            const container = document.getElementById('users-list');
-            const countEl = document.getElementById('users-count');
-            
-            if (!users || !Array.isArray(users)) {
-                countEl.textContent = '0';
-                container.innerHTML = '';
-                return;
-            }
-            
-            countEl.textContent = users.length;
-            
-            container.innerHTML = users.map(u => `
-                <div class="user-row">
-                    <div class="user-row-avatar">
-                        ${u.avatar || '👤'}
-                        <div class="status"></div>
-                    </div>
-                    <div class="user-row-info">
-                        <div class="name">${escapeHtml(u.name || 'Аноним')}</div>
-                        <div class="role">${u.isHost ? 'Ведущий' : 'Участник'}</div>
-                    </div>
-                    ${u.isHost ? '<div class="user-row-badge">HOST</div>' : ''}
-                </div>
-            `).join('');
-        }
-
-        function copyInviteLink() {
-            const link = `${window.location.origin}${window.location.pathname}?join=${state.roomCode}`;
-            
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(link)
-                    .then(() => showToast('Ссылка скопирована!', 'success'))
-                    .catch(() => fallbackCopy(link));
-            } else {
-                fallbackCopy(link);
-            }
-        }
-
-        function fallbackCopy(text) {
-            const ta = document.createElement('textarea');
-            ta.value = text;
-            ta.style.position = 'fixed';
-            ta.style.opacity = '0';
-            document.body.appendChild(ta);
-            ta.select();
-            
-            try {
-                document.execCommand('copy');
-                showToast('Ссылка скопирована!', 'success');
-            } catch (e) {
-                showToast('Не удалось скопировать', 'error');
-            }
-            
-            document.body.removeChild(ta);
-        }
-
-        // ========== EVENTS ==========
-        document.getElementById('chat-msg').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') sendChat();
-        });
-        
-        document.getElementById('url-input').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') setVideo();
-        });
-        
-        document.getElementById('settings-name').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') saveSettings();
-        });
-
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                closeSettings();
-                const sidebar = document.getElementById('sidebar');
-                if (sidebar.classList.contains('open')) toggleSidebar();
-            }
-        });
-
-        // Touch handling for sidebar swipe
-        let touchStartX = 0;
-        document.addEventListener('touchstart', (e) => {
-            touchStartX = e.touches[0].clientX;
-        }, { passive: true });
-
-        document.addEventListener('touchend', (e) => {
-            const touchEndX = e.changedTouches[0].clientX;
-            const diff = touchEndX - touchStartX;
-            const sidebar = document.getElementById('sidebar');
-            
-            // Swipe right from edge to open
-            if (diff > 60 && touchStartX < 30 && !sidebar.classList.contains('open')) {
-                toggleSidebar();
-            }
-            // Swipe left to close
-            if (diff < -60 && sidebar.classList.contains('open')) {
-                toggleSidebar();
-            }
-        }, { passive: true });
-
-        // Prevent zoom on double tap (iOS)
-        let lastTouchEnd = 0;
-        document.addEventListener('touchend', (e) => {
-            const now = Date.now();
-            if (now - lastTouchEnd <= 300) {
-                e.preventDefault();
-            }
-            lastTouchEnd = now;
-        }, { passive: false });
-    </script>
+console.log('🚀 QuorStream v2.2 loaded successfully!');
+console.log(`📺 ${MOVIES_DB.length} movies available`);
+</script>
 </body>
 </html>
